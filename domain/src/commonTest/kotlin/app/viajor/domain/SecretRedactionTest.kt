@@ -10,7 +10,7 @@ class SecretRedactionTest {
     // Fake values are assembled at run time so secret scanners do not flag this test file.
     private fun fake(vararg parts: String) = parts.joinToString("")
 
-    private val key = fake("sk-", "ant-api03-", "ABCDEFGHIJKLMNOP1234567890")
+    private val anthropicStyle = fake("sk-", "ant-api03-", "x".repeat(24))
 
     @Test
     fun aRegisteredKeyNeverSurvivesRedaction() {
@@ -39,8 +39,8 @@ class SecretRedactionTest {
     @Test
     fun keyShapesAndQueryParametersAreMasked() {
         val r = SecretRedactor()
-        val out = r.redact("using $key and https://api.example.com/v1?" + fake("api_", "key=", "SECRETVALUE123") + "&q=paris")
-        assertFalse(key in out)
+        val out = r.redact("using $anthropicStyle and https://api.example.com/v1?" + fake("api_", "key=", "SECRETVALUE123") + "&q=paris")
+        assertFalse(anthropicStyle in out)
         assertFalse("SECRETVALUE123" in out)
         assertTrue("q=paris" in out)
         assertEquals("token [REDACTED]", r.redact(fake("token sk-", "abcdefghijklmnopqrst")))
