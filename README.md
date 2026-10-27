@@ -1,6 +1,8 @@
-# {{project_name}}
+# Viajorapp
 
-Describe the project in one or two sentences: what it does and who uses it.
+**Plan smarter. Travel further.** Open-source, offline-first travel planning for Android and iOS. Your trips stay on your device; maps, AI and sync are optional.
+
+> Status: early foundation (0.1). The Android shell builds; trip features are not implemented yet. See [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md) for what works and what does not.
 
 <!-- template:start -->
 ## Starting a project from this template

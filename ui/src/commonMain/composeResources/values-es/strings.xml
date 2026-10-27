@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Viajorapp</string>
+    <string name="tagline">Planifica mejor. Viaja más lejos.</string>
+    <string name="empty_trips_title">Aún no hay viajes</string>
+    <string name="empty_trips_body">Tus viajes se quedan en este dispositivo. No necesitas una cuenta.</string>
+    <string name="action_create_trip">Crear un viaje</string>
+    <string name="map_attribution">Datos del mapa: %1$s</string>
+</resources>

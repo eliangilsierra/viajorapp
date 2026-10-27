@@ -1,0 +1,227 @@
+{
+  "concept": "02-keyhole-road",
+  "tokens": {
+    "light": {
+      "primary": "#1E2A78",
+      "on_primary": "#FFFFFF",
+      "accent": "#D2442A",
+      "on_accent": "#FFFFFF",
+      "bg": "#F6F6FB",
+      "surface": "#FFFFFF",
+      "text": "#15183A",
+      "text_muted": "#4A4E73",
+      "outline": "#7B80A6"
+    },
+    "dark": {
+      "primary": "#AEB8FF",
+      "on_primary": "#10143A",
+      "accent": "#FF8A6B",
+      "on_accent": "#3A0F05",
+      "bg": "#0E1128",
+      "surface": "#171B3D",
+      "text": "#ECEEFF",
+      "text_muted": "#B3B8DD",
+      "outline": "#6F77C0"
+    },
+    "app_icon": {
+      "bg": "#1E2A78",
+      "body": "#F6F6FB",
+      "accent": "#FF8A6B"
+    }
+  },
+  "contrast": {
+    "light": [
+      {
+        "pair": "text on bg",
+        "fg": "#15183A",
+        "bg": "#F6F6FB",
+        "ratio": 15.93,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "text-muted on bg",
+        "fg": "#4A4E73",
+        "bg": "#F6F6FB",
+        "ratio": 7.42,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "text on surface",
+        "fg": "#15183A",
+        "bg": "#FFFFFF",
+        "ratio": 17.16,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "on-primary on primary",
+        "fg": "#FFFFFF",
+        "bg": "#1E2A78",
+        "ratio": 12.67,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "on-accent on accent",
+        "fg": "#FFFFFF",
+        "bg": "#D2442A",
+        "ratio": 4.56,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "primary on bg (logo, graphics)",
+        "fg": "#1E2A78",
+        "bg": "#F6F6FB",
+        "ratio": 11.76,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      },
+      {
+        "pair": "primary on surface (graphics)",
+        "fg": "#1E2A78",
+        "bg": "#FFFFFF",
+        "ratio": 12.67,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      },
+      {
+        "pair": "accent on bg (logo, graphics)",
+        "fg": "#D2442A",
+        "bg": "#F6F6FB",
+        "ratio": 4.24,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      },
+      {
+        "pair": "outline on bg (field borders)",
+        "fg": "#7B80A6",
+        "bg": "#F6F6FB",
+        "ratio": 3.56,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      }
+    ],
+    "dark": [
+      {
+        "pair": "text on bg",
+        "fg": "#ECEEFF",
+        "bg": "#0E1128",
+        "ratio": 16.15,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "text-muted on bg",
+        "fg": "#B3B8DD",
+        "bg": "#0E1128",
+        "ratio": 9.58,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "text on surface",
+        "fg": "#ECEEFF",
+        "bg": "#171B3D",
+        "ratio": 14.47,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "on-primary on primary",
+        "fg": "#10143A",
+        "bg": "#AEB8FF",
+        "ratio": 9.38,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "on-accent on accent",
+        "fg": "#3A0F05",
+        "bg": "#FF8A6B",
+        "ratio": 7.28,
+        "required": 4.5,
+        "kind": "text",
+        "passes": true
+      },
+      {
+        "pair": "primary on bg (logo, graphics)",
+        "fg": "#AEB8FF",
+        "bg": "#0E1128",
+        "ratio": 9.83,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      },
+      {
+        "pair": "primary on surface (graphics)",
+        "fg": "#AEB8FF",
+        "bg": "#171B3D",
+        "ratio": 8.81,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      },
+      {
+        "pair": "accent on bg (logo, graphics)",
+        "fg": "#FF8A6B",
+        "bg": "#0E1128",
+        "ratio": 8.06,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      },
+      {
+        "pair": "outline on bg (field borders)",
+        "fg": "#6F77C0",
+        "bg": "#0E1128",
+        "ratio": 4.49,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      }
+    ],
+    "app_icon": [
+      {
+        "pair": "icon body on icon background",
+        "fg": "#F6F6FB",
+        "bg": "#1E2A78",
+        "ratio": 11.76,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      },
+      {
+        "pair": "icon accent on icon background",
+        "fg": "#FF8A6B",
+        "bg": "#1E2A78",
+        "ratio": 5.49,
+        "required": 3.0,
+        "kind": "graphics",
+        "passes": true
+      }
+    ]
+  },
+  "notes": [
+    "Ratios are WCAG 2.x relative-luminance contrast, computed by design/brand/tools/brand_lib.py.",
+    "text pairs need 4.5:1, graphics and UI-component boundaries need 3:1 (WCAG 1.4.3 / 1.4.11).",
+    "Dividers that are purely decorative may use the outline token at reduced opacity."
+  ],
+  "app_icon_scale": 1.437,
+  "app_icon_probe_radius_at_scale_1": 213.0
+}
