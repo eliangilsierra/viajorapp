@@ -15,7 +15,7 @@ run and passed. Updated 2026-10-27: only domain rules and a schema spike exist; 
 | DAY-02 | J6 | 0004 | UI timeline | none | Not implemented |
 | ACT-01 | J4 | 0002 | `ActivityValidationTest` | none | Not implemented |
 | ACT-02 | J6 | 0002 | `OrderingTest`, UI drag/alt | `domain/.../FractionalIndex.kt` (ordering keys only; no UI or persistence) | Partially implemented |
-| ACT-03 | J4 | 0002 | `TimeRulesPropertyTest` | `domain/.../Overlap.kt` (overlap detection only; time-zone rules not started) | Partially implemented |
+| ACT-03 | J4 | 0002 | `TimeRulesPropertyTest` | `domain/.../Overlap.kt`, `domain/.../ZonedTimes.kt` (overlap detection and zone/DST resolution as pure functions, tested; no persistence or UI wiring) | Partially implemented |
 | ACT-04 | J4 | 0002 | `TagRepositoryTest` | none | Not implemented |
 | ACT-05 | J5 | 0002 | `CompletionTest` | none | Not implemented |
 | RSV-01 | J4 | 0002 | `ReservationTest` | none | Not implemented |
