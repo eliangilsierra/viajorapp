@@ -10,6 +10,7 @@ kotlin {
         namespace = "app.viajor.designsystem"
         compileSdk = 37
         minSdk = 24
+        withHostTestBuilder {}
     }
     iosArm64()
     iosSimulatorArm64()
@@ -19,6 +20,9 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
     }
 }

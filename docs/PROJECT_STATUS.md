@@ -17,6 +17,8 @@ or emulator in this environment). Work is committed locally on `feature/1-projec
 | `./gradlew :data:allTests` | 3 tests passed (SQLDelight schema v1 on in-memory SQLite) |
 | `./gradlew :androidApp:assembleDebug` | Debug APK built (about 53 MB) |
 | `./gradlew :androidApp:lintDebug` | Passed; 1 warning (`targetSdk` 36 is not the latest) |
+| `./gradlew :designsystem:allTests` | 3 tests passed (Waypoint token contrast pairs, WCAG ratio) |
+| `app_icons.py verify` | 29 checks, 0 problems; the debug APK contains the adaptive icon resources |
 
 ## Not verified or not possible here
 
@@ -42,7 +44,7 @@ The designer's weighted scores (its own judgement, not user research) are Waypoi
 Contour is weak at 16 px and can read as an eye or fingerprint. Not done: device testing, trademark
 search, colour-blind simulation, VectorDrawable/iOS icon export. **Decision (2026-10-27): the owner chose concept 01, Waypoint**, for its design system. The
 choice rests on their visual judgement, not on user research or a trademark search (still open).
-Final assets, design tokens and the app icon are not yet wired into the app.
+Design tokens and the Android app icon are wired in (issue #3, stacked on #1); the iOS icon files exist but were never opened in Xcode. Fonts are not wired.
 
 ## Decisions and open items
 
@@ -63,13 +65,13 @@ Still open:
 ## Known limitations of the current code
 
 - `Create a trip` and all feature entry points do not exist yet (no placeholder buttons are shown).
-- Colors in `designsystem` are provisional until the brand is approved.
+- `designsystem` colors are the Waypoint tokens (light and dark) and their contrast pairs are tested. Typography is not done: Manrope and Inter are not bundled until their OFL files are checked. Only some Material3 roles are mapped.
 - The map surface is compiled but not displayed by any screen.
 - Database is not wired to the UI; no repository layer yet.
 
 ## Next tasks
 
-1. Turn the Waypoint palette and type into real design tokens; wire the app icon (adaptive icon layers).
+1. Bundle the Waypoint fonts after checking their OFL licences; replace remaining Material defaults.
 2. Schema v2 with places, days, activities; migration test with a generated baseline schema.
 3. Repository layer and view models for trips (TRP-01..03) with tests, then the day/itinerary UI.
 4. Install an emulator image (or connect a device) to run the app and measure startup.
