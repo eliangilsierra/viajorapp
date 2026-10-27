@@ -1,18 +1,15 @@
-# {{project_name}}
+# Viajorapp
 
-Describe the project in one or two sentences: what it does and who uses it.
+Open-source, offline-first travel planning and trip management app for Android and iOS, for independent travelers, couples and anyone organizing a complex trip without a mandatory account or server.
 
 ## Project facts
 
-Generate this section with `detect_stack.py . --format md` (team repository,
-`skills/stack-routing/scripts/`) and correct anything it could not detect.
-
-- Stack: <language, framework, build tool>
-- Install: `<command>`
-- Lint: `<command>`
-- Test: `<command>`
-- Build: `<command>`
-- Layout: <where the source, the tests and the documentation live>
+- Stack: Kotlin 2.4.21 Multiplatform, Compose Multiplatform 1.12.2, SQLDelight 2.4.1, MapLibre (maplibre-compose 0.20.0), Gradle 9.8.2 (wrapper), AGP 9.4.1, JDK 17
+- Install: `./gradlew --version` (the wrapper downloads Gradle); set `sdk.dir` with forward slashes in `local.properties`
+- Lint: `./gradlew :androidApp:lintDebug`
+- Test: `./gradlew :domain:allTests :data:allTests`
+- Build: `./gradlew :androidApp:assembleDebug` (iOS targets need macOS and are not built on Windows or Linux)
+- Layout: `domain/` pure rules, `data/` SQLDelight, `designsystem/` tokens and theme, `ui/` screens and map surface, `androidApp/` shell, `docs/` product, design, decisions and research, `design/brand/` brand sources
 - Branches: `develop` is the integration branch and the default branch; `main` holds releases only
 
 ## Team contract

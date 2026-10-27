@@ -13,4 +13,9 @@ merging its Pull Request into `develop`.
 
 | ADR | Title | Status | Date |
 | --- | --- | --- | --- |
-| None yet | — | — | — |
+| [ADR-0001](ADR-0001-kotlin-multiplatform-compose.md) | Kotlin Multiplatform with Compose Multiplatform | Accepted | 2026-10-27 |
+| [ADR-0002](ADR-0002-local-persistence-sqldelight.md) | Local persistence with SQLDelight | Accepted | 2026-10-27 |
+| [ADR-0003](ADR-0003-maps-and-offline-tiles.md) | Maps with MapLibre and an honest offline-map strategy | Accepted | 2026-10-27 |
+| [ADR-0004](ADR-0004-routing-and-travel-estimates.md) | Routing provider interface and travel estimates | Accepted | 2026-10-27 |
+| [ADR-0005](ADR-0005-optional-ai-byok.md) | Optional AI with bring-your-own-key | Accepted | 2026-10-27 |
+| [ADR-0006](ADR-0006-optional-sync-and-collaboration.md) | Optional sync through encrypted change files | Accepted | 2026-10-27 |
