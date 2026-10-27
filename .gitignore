@@ -53,3 +53,11 @@ gitleaks_*.tar.gz
 *.swp
 .DS_Store
 Thumbs.db
+
+# Local build configuration
+local.properties
+*.iml
+.kotlin/
+captures/
+.externalNativeBuild/
+.cxx/

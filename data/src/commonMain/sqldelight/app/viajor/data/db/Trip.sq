@@ -1,0 +1,30 @@
+-- Schema version 1. Every synced table carries sync metadata from the first migration (ADR-0002).
+CREATE TABLE trip (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL CHECK (length(title) > 0),
+    description TEXT,
+    -- ISO-8601 local dates (YYYY-MM-DD); NULL for an undated "someday" trip.
+    start_date TEXT,
+    end_date TEXT,
+    archived_at INTEGER,
+    -- Soft delete tombstone (epoch millis); rows are purged after the retention window.
+    deleted_at INTEGER,
+    updated_at_hlc TEXT NOT NULL,
+    updated_by TEXT NOT NULL,
+    CHECK (start_date IS NULL OR end_date IS NULL OR start_date <= end_date)
+);
+
+CREATE INDEX trip_active ON trip(deleted_at, archived_at);
+
+insertTrip:
+INSERT INTO trip(id, title, description, start_date, end_date, updated_at_hlc, updated_by)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+selectActive:
+SELECT * FROM trip WHERE deleted_at IS NULL AND archived_at IS NULL ORDER BY start_date IS NULL, start_date, title;
+
+softDelete:
+UPDATE trip SET deleted_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+restore:
+UPDATE trip SET deleted_at = NULL, updated_at_hlc = ?, updated_by = ? WHERE id = ?;

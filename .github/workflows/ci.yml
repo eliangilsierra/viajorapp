@@ -1,7 +1,7 @@
-# Build, lint and test for a Node.js project worked on by the agent team.
-# Copy to .github/workflows/ci.yml of the project (humans add workflow files) and mark the job
-# "ci" as a required status check of main. Adjust the commands to the project's package.json.
-# Each step is skipped while the repository has no package.json yet.
+# Build, unit tests and Android lint for Viajorapp (Kotlin Multiplatform + Compose Multiplatform).
+# The job is named "ci" because main and develop require that status check.
+# iOS targets are declared in the modules but Kotlin/Native iOS compilation needs macOS; this Linux job
+# therefore verifies the shared code on the JVM/Android only. See docs/research for the iOS limitation.
 
 name: ci
 
@@ -21,35 +21,27 @@ jobs:
   ci:
     name: ci
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 45
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
           persist-credentials: false
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v7
+      - name: Set up Java
+        uses: actions/setup-java@v6
         with:
-          node-version: "22"
+          distribution: temurin
+          java-version: "17"
 
-      - name: Install dependencies
-        if: hashFiles('package.json') != ''
-        # npm ci needs a lockfile; projects without one fall back to npm install.
-        run: if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
 
-      - name: Lint
-        if: hashFiles('package.json') != ''
-        run: npm run lint
+      - name: Unit tests (shared code)
+        run: ./gradlew :domain:allTests --console=plain
 
-      - name: Test
-        if: hashFiles('package.json') != ''
-        run: npm test -- --run
+      - name: Android lint
+        run: ./gradlew :androidApp:lintDebug --console=plain
 
-      - name: Build
-        if: hashFiles('package.json') != ''
-        run: npm run build
-
-      - name: No project yet
-        if: hashFiles('package.json') == ''
-        run: echo "No package.json yet; nothing to build."
+      - name: Assemble debug APK
+        run: ./gradlew :androidApp:assembleDebug --console=plain

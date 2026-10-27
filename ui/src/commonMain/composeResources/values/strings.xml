@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Viajorapp</string>
+    <string name="tagline">Plan smarter. Travel further.</string>
+    <string name="empty_trips_title">No trips yet</string>
+    <string name="empty_trips_body">Your trips stay on this device. No account needed.</string>
+    <string name="action_create_trip">Create a trip</string>
+    <string name="map_attribution">Map data: %1$s</string>
+</resources>
