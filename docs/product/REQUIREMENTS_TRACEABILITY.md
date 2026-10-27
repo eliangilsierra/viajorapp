@@ -11,15 +11,15 @@ run and passed. Updated 2026-10-27: only domain rules and a schema spike exist; 
 | TRP-02 | J12 | 0002 | `TripLifecycleTest`, E2E delete | none | Not implemented |
 | TRP-03 | J2, J4 | 0002 | `DestinationTest` | none | Not implemented |
 | TRP-04 | J4 | 0002 | `TemplateTest` | none | Not implemented |
-| DAY-01 | J2, J4 | 0001 | UI day list, a11y | none | Not implemented |
+| DAY-01 | J2, J4 | 0001 | UI day list, a11y | `data/.../Day.sq` (table and queries only) | Partially implemented |
 | DAY-02 | J6 | 0004 | UI timeline | none | Not implemented |
-| ACT-01 | J4 | 0002 | `ActivityValidationTest` | none | Not implemented |
+| ACT-01 | J4 | 0002 | `ActivityValidationTest` | `data/.../Activity.sq` (table, constraints, queries; no UI or repository) | Partially implemented |
 | ACT-02 | J6 | 0002 | `OrderingTest`, UI drag/alt | `domain/.../FractionalIndex.kt` (ordering keys only; no UI or persistence) | Partially implemented |
 | ACT-03 | J4 | 0002 | `TimeRulesPropertyTest` | `domain/.../Overlap.kt` (overlap detection only; time-zone rules not started) | Partially implemented |
 | ACT-04 | J4 | 0002 | `TagRepositoryTest` | none | Not implemented |
 | ACT-05 | J5 | 0002 | `CompletionTest` | none | Not implemented |
 | RSV-01 | J4 | 0002 | `ReservationTest` | none | Not implemented |
-| PLC-01 | J5 | 0002 | `PlaceRepositoryTest` | none | Not implemented |
+| PLC-01 | J5 | 0002 | `PlaceRepositoryTest` | `data/.../Place.sq` (table, coordinate constraints, queries; no UI or repository) | Partially implemented |
 | PLC-02 | J5 | 0002, 0003 | `SearchTest`, geocoder fake | none | Not implemented |
 | MAP-01 | J5 | 0003 | map/list sync UI test; M | none | Not implemented |
 | MAP-02 | J6, J8 | 0003, 0004 | overlay UI | none | Not implemented |

@@ -1,0 +1,29 @@
+-- Schema version 2 (migrations/1.sqm). Sync metadata on every synced table (ADR-0002).
+CREATE TABLE place (
+    id TEXT NOT NULL PRIMARY KEY,
+    trip_id TEXT NOT NULL REFERENCES trip(id),
+    name TEXT NOT NULL CHECK (length(name) > 0),
+    address TEXT,
+    lat REAL,
+    lon REAL,
+    notes TEXT,
+    -- Provenance: where this record came from. AI and geocoder results are never silent (ADR-0005).
+    source TEXT NOT NULL DEFAULT 'user' CHECK (source IN ('user', 'import', 'ai', 'geocoder')),
+    deleted_at INTEGER,
+    updated_at_hlc TEXT NOT NULL,
+    updated_by TEXT NOT NULL,
+    CHECK ((lat IS NULL AND lon IS NULL) OR (lat IS NOT NULL AND lon IS NOT NULL AND lat BETWEEN -90 AND 90 AND lon BETWEEN -180 AND 180))
+);
+
+CREATE INDEX place_trip ON place(trip_id, deleted_at);
+CREATE INDEX place_coordinates ON place(lat, lon);
+
+insertPlace:
+INSERT INTO place(id, trip_id, name, address, lat, lon, notes, source, updated_at_hlc, updated_by)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectPlacesForTrip:
+SELECT * FROM place WHERE trip_id = ? AND deleted_at IS NULL ORDER BY name;
+
+softDeletePlace:
+UPDATE place SET deleted_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
