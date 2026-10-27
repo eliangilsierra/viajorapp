@@ -7,7 +7,7 @@ run and passed. Updated 2026-10-27: only domain rules and a schema spike exist; 
 | ID | Journeys | ADR | Planned tests | Code | Status |
 | --- | --- | --- | --- | --- | --- |
 | ONB-01 | J1 | 0001 | UI onboarding; M | none | Not implemented |
-| TRP-01 | J2 | 0002 | `TripRepositoryTest`, UI create trip | `data/.../Trip.sq` (schema v1 and queries only) | Partially implemented |
+| TRP-01 | J2 | 0002 | `TripRepositoryTest`, UI create trip | `data/.../Trip.sq` (schema v1 and queries only), `domain/.../TripDays.kt` (input validation and day generation, tested; no repository or UI) | Partially implemented |
 | TRP-02 | J12 | 0002 | `TripLifecycleTest`, E2E delete | none | Not implemented |
 | TRP-03 | J2, J4 | 0002 | `DestinationTest` | none | Not implemented |
 | TRP-04 | J4 | 0002 | `TemplateTest` | none | Not implemented |
