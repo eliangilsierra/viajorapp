@@ -31,10 +31,10 @@ INSERT INTO activity(id, trip_id, day_id, place_id, title, notes, kind, start_lo
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectForDay:
-SELECT * FROM activity WHERE day_id = ? AND deleted_at IS NULL ORDER BY sort_key;
+SELECT * FROM activity WHERE day_id = ? AND deleted_at IS NULL ORDER BY sort_key, id;
 
 selectUnscheduled:
-SELECT * FROM activity WHERE trip_id = ? AND day_id IS NULL AND deleted_at IS NULL ORDER BY sort_key;
+SELECT * FROM activity WHERE trip_id = ? AND day_id IS NULL AND deleted_at IS NULL ORDER BY sort_key, id;
 
 -- A reorder touches exactly one row (ADR-0002).
 updateSortKey:
@@ -48,3 +48,18 @@ UPDATE activity SET deleted_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id 
 
 restoreActivity:
 UPDATE activity SET deleted_at = NULL, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+selectActivityById:
+SELECT * FROM activity WHERE id = ?;
+
+updateActivity:
+UPDATE activity SET title = ?, notes = ?, kind = ?, start_local = ?, end_local = ?, zone_id = ?, place_id = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+moveActivity:
+UPDATE activity SET day_id = ?, sort_key = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+lastSortKeyForDay:
+SELECT sort_key FROM activity WHERE day_id = ? AND deleted_at IS NULL ORDER BY sort_key DESC, id DESC LIMIT 1;
+
+lastSortKeyUnscheduled:
+SELECT sort_key FROM activity WHERE trip_id = ? AND day_id IS NULL AND deleted_at IS NULL ORDER BY sort_key DESC, id DESC LIMIT 1;
