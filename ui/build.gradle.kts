@@ -10,6 +10,7 @@ kotlin {
         namespace = "app.viajor.ui"
         compileSdk = 37
         minSdk = 24
+        withHostTestBuilder {}
     }
     iosArm64()
     iosSimulatorArm64()
@@ -17,12 +18,20 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":domain"))
+            api(project(":data"))
             api(project(":designsystem"))
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.resources)
             implementation(libs.maplibre.compose)
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+        getByName("androidHostTest").dependencies {
+            implementation(libs.sqldelight.sqlite.driver)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }
