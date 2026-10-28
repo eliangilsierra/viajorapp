@@ -14,7 +14,7 @@ Priorities: P0/P1/P2 as in the [PRD](product/PRD.md). Risk column lists what cou
 | 4 | Design system and UX prototype | tokens, components, interactive preview | Not started (brand picked: Waypoint) |
 | 5 | Architecture decisions | ADR-0001..0006 | Accepted (2026-10-27) |
 | 6 | Project foundation and CI | Gradle project, version spike, CI | Android done and verified locally (F1-F4); CI workflow written, not yet run (F5); iOS unverified (F6) |
-| 7 | Local data model and persistence | schema v1, repositories, migrations | Not started |
+| 7 | Local data model and persistence | schema v1, repositories, migrations | In progress: schema v2 (`trip_day`, `place`, `activity`) with a verified migration (issue #6); repositories not started |
 | 8 | Trips and itinerary | TRP-*, DAY-*, ACT-*, SRC-01 | Not started |
 | 9 | Maps and places | MAP-*, PLC-* | Not started |
 | 10 | Routing and offline maps | RTE-*, OFM-* | Not started |

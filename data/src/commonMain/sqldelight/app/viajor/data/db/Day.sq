@@ -1,0 +1,23 @@
+-- Schema version 2 (migrations/1.sqm). Sync metadata on every synced table (ADR-0002).
+CREATE TABLE trip_day (
+    id TEXT NOT NULL PRIMARY KEY,
+    trip_id TEXT NOT NULL REFERENCES trip(id),
+    -- 1-based position in the trip. Days exist for undated trips too.
+    day_index INTEGER NOT NULL CHECK (day_index >= 1),
+    -- ISO-8601 local date (YYYY-MM-DD); NULL when the trip has no dates.
+    date TEXT,
+    title TEXT,
+    deleted_at INTEGER,
+    updated_at_hlc TEXT NOT NULL,
+    updated_by TEXT NOT NULL,
+    UNIQUE (trip_id, day_index)
+);
+
+CREATE INDEX trip_day_trip ON trip_day(trip_id, day_index);
+
+insertDay:
+INSERT INTO trip_day(id, trip_id, day_index, date, title, updated_at_hlc, updated_by)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+selectDaysForTrip:
+SELECT * FROM trip_day WHERE trip_id = ? AND deleted_at IS NULL ORDER BY day_index;

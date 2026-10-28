@@ -1,0 +1,63 @@
+-- Migration from schema version 1 to 2: itinerary tables (days, places, activities). The statements must
+-- stay identical to the table definitions in the .sq files; verifyMigrations compares them.
+CREATE TABLE trip_day (
+    id TEXT NOT NULL PRIMARY KEY,
+    trip_id TEXT NOT NULL REFERENCES trip(id),
+    -- 1-based position in the trip. Days exist for undated trips too.
+    day_index INTEGER NOT NULL CHECK (day_index >= 1),
+    -- ISO-8601 local date (YYYY-MM-DD); NULL when the trip has no dates.
+    date TEXT,
+    title TEXT,
+    deleted_at INTEGER,
+    updated_at_hlc TEXT NOT NULL,
+    updated_by TEXT NOT NULL,
+    UNIQUE (trip_id, day_index)
+);
+
+CREATE INDEX trip_day_trip ON trip_day(trip_id, day_index);
+
+CREATE TABLE place (
+    id TEXT NOT NULL PRIMARY KEY,
+    trip_id TEXT NOT NULL REFERENCES trip(id),
+    name TEXT NOT NULL CHECK (length(name) > 0),
+    address TEXT,
+    lat REAL,
+    lon REAL,
+    notes TEXT,
+    -- Provenance: where this record came from. AI and geocoder results are never silent (ADR-0005).
+    source TEXT NOT NULL DEFAULT 'user' CHECK (source IN ('user', 'import', 'ai', 'geocoder')),
+    deleted_at INTEGER,
+    updated_at_hlc TEXT NOT NULL,
+    updated_by TEXT NOT NULL,
+    CHECK ((lat IS NULL AND lon IS NULL) OR (lat IS NOT NULL AND lon IS NOT NULL AND lat BETWEEN -90 AND 90 AND lon BETWEEN -180 AND 180))
+);
+
+CREATE INDEX place_trip ON place(trip_id, deleted_at);
+CREATE INDEX place_coordinates ON place(lat, lon);
+
+CREATE TABLE activity (
+    id TEXT NOT NULL PRIMARY KEY,
+    trip_id TEXT NOT NULL REFERENCES trip(id),
+    -- NULL means the activity is an unscheduled idea for the trip.
+    day_id TEXT REFERENCES trip_day(id),
+    place_id TEXT REFERENCES place(id),
+    title TEXT NOT NULL CHECK (length(title) > 0),
+    notes TEXT,
+    kind TEXT NOT NULL DEFAULT 'activity' CHECK (kind IN ('activity', 'transport', 'lodging', 'meal', 'note')),
+    -- Local date-time (YYYY-MM-DDTHH:MM) plus IANA zone id (ADR-0002); an end later than the start date is an overnight item.
+    start_local TEXT,
+    end_local TEXT,
+    zone_id TEXT,
+    -- Fractional-index key within the day (domain FractionalIndex).
+    sort_key TEXT NOT NULL,
+    completed_at INTEGER,
+    source TEXT NOT NULL DEFAULT 'user' CHECK (source IN ('user', 'import', 'ai', 'geocoder')),
+    deleted_at INTEGER,
+    updated_at_hlc TEXT NOT NULL,
+    updated_by TEXT NOT NULL,
+    CHECK (start_local IS NULL OR end_local IS NULL OR end_local >= start_local),
+    CHECK (zone_id IS NOT NULL OR (start_local IS NULL AND end_local IS NULL))
+);
+
+CREATE INDEX activity_day ON activity(day_id, sort_key);
+CREATE INDEX activity_trip ON activity(trip_id, deleted_at);
