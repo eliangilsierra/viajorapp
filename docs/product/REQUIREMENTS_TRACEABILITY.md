@@ -41,7 +41,7 @@ run and passed. Updated 2026-10-27: only domain rules and a schema spike exist; 
 | SET-01 | all | 0001 | UI settings | none | Not implemented |
 | PRV-01 | J1, J9, J12 | 0002, 0005 | `DeleteAllTest`, network-idle audit | none | Not implemented |
 | AI-01 | J9 | 0005 | `SecretStoreTest`, `KeyLeakTest` | `domain/.../SecretRedaction.kt` (redactor and export guard only; no platform secret store, logging wiring or settings screen) | Partially implemented |
-| AI-02 | J9 | 0005 | `ProposalValidationTest`, E2E | none | Not implemented |
+| AI-02 | J9 | 0005 | `ProposalValidationTest`, E2E | `domain/.../AiProposal.kt` (model, validation, diff and partial apply as pure logic; no provider, JSON parsing or review UI) | Partially implemented |
 | AI-03 | J3, J9 | 0005 | `ExtractionTest` | none | Not implemented |
 | SYN-01 | J10 | 0006 | `SyncRoundTripTest` | none | Not implemented |
 | SYN-02 | J11 | 0006 | `ConflictResolutionTest`, E2E | none | Not implemented |
