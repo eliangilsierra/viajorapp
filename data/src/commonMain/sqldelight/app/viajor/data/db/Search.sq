@@ -1,0 +1,46 @@
+-- Full-text search (schema version 3, migrations/2.sqm). Soft-deleted rows stay indexed and are filtered by the query.
+CREATE VIRTUAL TABLE search_index USING fts4(
+    trip_id,
+    kind,
+    ref_id,
+    body,
+    notindexed=trip_id,
+    notindexed=kind,
+    notindexed=ref_id,
+    tokenize=unicode61
+);
+
+CREATE TRIGGER place_index_insert AFTER INSERT ON place BEGIN
+    INSERT INTO search_index(trip_id, kind, ref_id, body)
+    VALUES (new.trip_id, 'place', new.id, new.name || ' ' || coalesce(new.address, '') || ' ' || coalesce(new.notes, ''));
+END;
+
+CREATE TRIGGER place_index_update AFTER UPDATE OF name, address, notes ON place BEGIN
+    DELETE FROM search_index WHERE kind = 'place' AND ref_id = old.id;
+    INSERT INTO search_index(trip_id, kind, ref_id, body)
+    VALUES (new.trip_id, 'place', new.id, new.name || ' ' || coalesce(new.address, '') || ' ' || coalesce(new.notes, ''));
+END;
+
+CREATE TRIGGER activity_index_insert AFTER INSERT ON activity BEGIN
+    INSERT INTO search_index(trip_id, kind, ref_id, body)
+    VALUES (new.trip_id, 'activity', new.id, new.title || ' ' || coalesce(new.notes, ''));
+END;
+
+CREATE TRIGGER activity_index_update AFTER UPDATE OF title, notes ON activity BEGIN
+    DELETE FROM search_index WHERE kind = 'activity' AND ref_id = old.id;
+    INSERT INTO search_index(trip_id, kind, ref_id, body)
+    VALUES (new.trip_id, 'activity', new.id, new.title || ' ' || coalesce(new.notes, ''));
+END;
+
+search:
+SELECT s.kind, s.ref_id, s.trip_id, s.body
+FROM (SELECT * FROM search_index WHERE search_index MATCH :query) AS s
+JOIN trip AS t ON t.id = s.trip_id
+LEFT JOIN place AS p ON s.kind = 'place' AND p.id = s.ref_id
+LEFT JOIN activity AS a ON s.kind = 'activity' AND a.id = s.ref_id
+WHERE t.deleted_at IS NULL
+  AND (:tripId IS NULL OR s.trip_id = :tripId)
+  AND ((s.kind = 'place' AND p.id IS NOT NULL AND p.deleted_at IS NULL)
+    OR (s.kind = 'activity' AND a.id IS NOT NULL AND a.deleted_at IS NULL))
+ORDER BY s.kind, s.body
+LIMIT :limit;
