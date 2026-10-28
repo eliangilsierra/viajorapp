@@ -1,0 +1,41 @@
+-- Migration from schema version 2 to 3: full-text search over places and activities. FTS4 is used instead of
+-- FTS5 because FTS5 is not guaranteed on Android API 24 to 29 (see ADR-0007). The DDL must stay identical to
+-- Search.sq; the INSERT statements only backfill rows that existed before the upgrade.
+CREATE VIRTUAL TABLE search_index USING fts4(
+    trip_id,
+    kind,
+    ref_id,
+    body,
+    notindexed=trip_id,
+    notindexed=kind,
+    notindexed=ref_id,
+    tokenize=unicode61
+);
+
+CREATE TRIGGER place_index_insert AFTER INSERT ON place BEGIN
+    INSERT INTO search_index(trip_id, kind, ref_id, body)
+    VALUES (new.trip_id, 'place', new.id, new.name || ' ' || coalesce(new.address, '') || ' ' || coalesce(new.notes, ''));
+END;
+
+CREATE TRIGGER place_index_update AFTER UPDATE OF name, address, notes ON place BEGIN
+    DELETE FROM search_index WHERE kind = 'place' AND ref_id = old.id;
+    INSERT INTO search_index(trip_id, kind, ref_id, body)
+    VALUES (new.trip_id, 'place', new.id, new.name || ' ' || coalesce(new.address, '') || ' ' || coalesce(new.notes, ''));
+END;
+
+CREATE TRIGGER activity_index_insert AFTER INSERT ON activity BEGIN
+    INSERT INTO search_index(trip_id, kind, ref_id, body)
+    VALUES (new.trip_id, 'activity', new.id, new.title || ' ' || coalesce(new.notes, ''));
+END;
+
+CREATE TRIGGER activity_index_update AFTER UPDATE OF title, notes ON activity BEGIN
+    DELETE FROM search_index WHERE kind = 'activity' AND ref_id = old.id;
+    INSERT INTO search_index(trip_id, kind, ref_id, body)
+    VALUES (new.trip_id, 'activity', new.id, new.title || ' ' || coalesce(new.notes, ''));
+END;
+
+INSERT INTO search_index(trip_id, kind, ref_id, body)
+SELECT trip_id, 'place', id, name || ' ' || coalesce(address, '') || ' ' || coalesce(notes, '') FROM place;
+
+INSERT INTO search_index(trip_id, kind, ref_id, body)
+SELECT trip_id, 'activity', id, title || ' ' || coalesce(notes, '') FROM activity;
