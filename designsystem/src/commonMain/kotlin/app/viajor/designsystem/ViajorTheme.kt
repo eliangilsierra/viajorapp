@@ -52,8 +52,8 @@ object ViajorTokens {
 }
 
 /**
- * Material3 roles not mapped here (containers, inverse and tint roles) keep Material defaults until a
- * component needs them; map them from the Waypoint tokens at that point instead of using the defaults.
+ * Material3 roles not mapped here (tertiary, inverse and tint roles) keep Material
+ * defaults until a component needs them; map them from the Waypoint tokens at that point.
  */
 @Composable
 fun ViajorTheme(
@@ -67,6 +67,15 @@ fun ViajorTheme(
             onPrimary = t.onPrimary,
             secondary = t.accent,
             onSecondary = t.onAccent,
+            primaryContainer = t.primary,
+            onPrimaryContainer = t.onPrimary,
+            secondaryContainer = t.surface,
+            onSecondaryContainer = t.text,
+            surfaceContainerLowest = t.surface,
+            surfaceContainerLow = t.surface,
+            surfaceContainer = t.surface,
+            surfaceContainerHigh = t.surface,
+            surfaceContainerHighest = t.surface,
             background = t.background,
             onBackground = t.text,
             surface = t.surface,
@@ -81,6 +90,15 @@ fun ViajorTheme(
             onPrimary = t.onPrimary,
             secondary = t.accent,
             onSecondary = t.onAccent,
+            primaryContainer = t.primary,
+            onPrimaryContainer = t.onPrimary,
+            secondaryContainer = t.surface,
+            onSecondaryContainer = t.text,
+            surfaceContainerLowest = t.surface,
+            surfaceContainerLow = t.surface,
+            surfaceContainer = t.surface,
+            surfaceContainerHigh = t.surface,
+            surfaceContainerHighest = t.surface,
             background = t.background,
             onBackground = t.text,
             surface = t.surface,

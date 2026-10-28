@@ -71,8 +71,11 @@ fun TripListScreen(deps: AppDependencies, navigator: Navigator) {
         topBar = { TopAppBar(title = { Text(stringResource(Res.string.trips_title)) }) },
         snackbarHost = { SnackbarHost(snackbar) },
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = { navigator.open(Screen.TripEditor(null)) }) {
-                Text(stringResource(Res.string.action_create_trip))
+            // The empty state already has its own create button.
+            if (state.status == ListStatus.CONTENT) {
+                ExtendedFloatingActionButton(onClick = { navigator.open(Screen.TripEditor(null)) }) {
+                    Text(stringResource(Res.string.action_create_trip))
+                }
             }
         },
     ) { padding ->
