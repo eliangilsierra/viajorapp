@@ -70,7 +70,7 @@
     <string name="delete_all_body">Se borrarán todos los viajes, días, lugares y actividades de este dispositivo. No se puede deshacer. Las copias que guardaste no se tocan.</string>
     <string name="action_delete_all_confirm">Borrar todo</string>
     <string name="msg_exported">Copia guardada</string>
-    <string name="msg_restored">Se restauraron %1$d viajes con %2$d actividades. Tus viajes actuales no se modificaron.</string>
+    <string name="msg_restored">Viajes restaurados: %1$d. Actividades restauradas: %2$d. Tus viajes actuales no se modificaron.</string>
     <string name="msg_restore_failed">Ese archivo no es una copia válida de Viajorapp. No se cambió nada.</string>
     <string name="msg_erased">Se borraron todos los datos</string>
     <string name="msg_failed">Algo salió mal. No se cambió nada.</string>

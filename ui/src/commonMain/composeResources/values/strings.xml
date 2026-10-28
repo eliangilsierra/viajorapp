@@ -70,7 +70,7 @@
     <string name="delete_all_body">All trips, days, places and activities on this device will be erased. This cannot be undone. Backup files you saved are not affected.</string>
     <string name="action_delete_all_confirm">Delete everything</string>
     <string name="msg_exported">Backup saved</string>
-    <string name="msg_restored">Restored %1$d trips with %2$d activities. Your existing trips were not changed.</string>
+    <string name="msg_restored">Trips restored: %1$d. Activities restored: %2$d. Your existing trips were not changed.</string>
     <string name="msg_restore_failed">That file is not a valid Viajorapp backup. Nothing was changed.</string>
     <string name="msg_erased">All data was deleted</string>
     <string name="msg_failed">Something went wrong. Nothing was changed.</string>
