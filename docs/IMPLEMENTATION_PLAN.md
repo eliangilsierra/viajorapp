@@ -11,7 +11,7 @@ Priorities: P0/P1/P2 as in the [PRD](product/PRD.md). Risk column lists what cou
 | 1 | Environment reconnaissance | [Findings](research/2026-10-27-environment-and-stack-findings.md) | Done |
 | 2 | Product discovery | `docs/product/*` | Drafted, awaiting owner review |
 | 3 | Brand concepts | `design/brand/**`, `docs/design/BRAND_STRATEGY.md` | Done: Waypoint chosen by the owner (2026-10-27) |
-| 4 | Design system and UX prototype | tokens, components, interactive preview | Not started (brand picked: Waypoint) |
+| 4 | Design system and UX prototype | tokens, components, interactive preview | In progress: Waypoint color tokens and app icon done (issue #3); fonts, components, prototype not started |
 | 5 | Architecture decisions | ADR-0001..0006 | Accepted (2026-10-27) |
 | 6 | Project foundation and CI | Gradle project, version spike, CI | Android done and verified locally (F1-F4); CI workflow written, not yet run (F5); iOS unverified (F6) |
 | 7 | Local data model and persistence | schema v1, repositories, migrations | In progress: schema v2 (`trip_day`, `place`, `activity`) with a verified migration (issue #6); repositories not started |
