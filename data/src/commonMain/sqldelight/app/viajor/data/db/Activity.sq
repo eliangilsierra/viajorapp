@@ -63,3 +63,9 @@ SELECT sort_key FROM activity WHERE day_id = ? AND deleted_at IS NULL ORDER BY s
 
 lastSortKeyUnscheduled:
 SELECT sort_key FROM activity WHERE trip_id = ? AND day_id IS NULL AND deleted_at IS NULL ORDER BY sort_key DESC, id DESC LIMIT 1;
+
+selectActivitiesForTrip:
+SELECT * FROM activity WHERE trip_id = ? AND deleted_at IS NULL ORDER BY day_id IS NULL, day_id, sort_key, id;
+
+deleteAllActivities:
+DELETE FROM activity;
