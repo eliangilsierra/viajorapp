@@ -24,7 +24,7 @@ run and passed. Updated 2026-10-27: only domain rules and a schema spike exist; 
 | MAP-01 | J5 | 0003 | map/list sync UI test; M | none | Not implemented |
 | MAP-02 | J6, J8 | 0003, 0004 | overlay UI | none | Not implemented |
 | MAP-03 | J5, J7 | 0003 | `TileSourceTest` | `domain/.../TileSource.kt`, `ui/.../MapSurface.kt` (model and surface; not wired to a screen or run on a device) | Partially implemented |
-| OFM-01 | J7 | 0003 | `OfflinePackTest`, M on device | none | Not implemented |
+| OFM-01 | J7 | 0003 | `OfflinePackTest`, M on device | `domain/.../OfflineEstimate.kt` (tile arithmetic and a pre-download size estimate only; nothing is downloaded or stored) | Partially implemented |
 | OFM-02 | J7 | 0003 | `TilePackageImportTest` | none | Not implemented |
 | RTE-01 | J8 | 0004 | `StraightLineEstimatorPropertyTest` | `domain/.../TravelEstimate.kt` (calculation only; not shown in UI) | Partially implemented |
 | RTE-02 | J8 | 0004 | `ValhallaAdapterContractTest` | none | Not implemented |
