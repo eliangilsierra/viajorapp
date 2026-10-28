@@ -44,7 +44,7 @@ run and passed. Updated 2026-10-27: only domain rules and a schema spike exist; 
 | AI-02 | J9 | 0005 | `ProposalValidationTest`, E2E | none | Not implemented |
 | AI-03 | J3, J9 | 0005 | `ExtractionTest` | none | Not implemented |
 | SYN-01 | J10 | 0006 | `SyncRoundTripTest` | none | Not implemented |
-| SYN-02 | J11 | 0006 | `ConflictResolutionTest`, E2E | none | Not implemented |
+| SYN-02 | J11 | 0006 | `ConflictResolutionTest`, E2E | `domain/.../SyncMerge.kt` (HLC and three-way field merge as pure functions; no change files, transport, encryption or UI) | Partially implemented |
 | SYN-03 | J10 | 0006 | `RoleAndRevocationTest`, threat-model review | none | Not implemented |
 | BUD-01 | J4 | 0002 | `BudgetTest` | none | Not implemented |
 | A11Y-01 | all | 0001 | Compose accessibility checks; M with screen reader | none | Not implemented |
