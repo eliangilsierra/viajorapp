@@ -30,12 +30,12 @@ run and passed. Updated 2026-10-27: only domain rules and a schema spike exist; 
 | RTE-02 | J8 | 0004 | `ValhallaAdapterContractTest` | none | Not implemented |
 | RTE-03 | J8 | 0004 | `ManeuverMappingTest` | none | Not implemented |
 | RTE-04 | J7, J8 | 0004 | not planned | none | Not implemented |
-| IMP-01 | J3 | 0002 | `CsvImportTest`, E2E | none | Not implemented |
+| IMP-01 | J3 | 0002 | `CsvImportTest`, E2E | `domain/.../Csv.kt` (reader and writer only; no column mapping, file picker or UI) | Partially implemented |
 | IMP-02 | J3 | 0002 | `JsonImportTest` | none | Not implemented |
 | IMP-03 | J3 | 0002 | `XlsxImportTest`, zip-bomb test | none | Not implemented |
 | IMP-04 | J3 | 0002, 0005 | `TextImportTest` | none | Not implemented |
 | EXP-01 | J12 | 0002 | `BackupRoundTripTest`, E2E | none | Not implemented |
-| EXP-02 | J12 | 0002 | `ExportFormatTest` | none | Not implemented |
+| EXP-02 | J12 | 0002 | `ExportFormatTest` | `domain/.../Csv.kt` (CSV writer with formula guard only) | Partially implemented |
 | EXP-03 | J12 | none | M | none | Not implemented |
 | SRC-01 | J4 | 0002 | `SearchPerfTest` | none | Not implemented |
 | SET-01 | all | 0001 | UI settings | none | Not implemented |
