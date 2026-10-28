@@ -10,6 +10,7 @@ kotlin {
         namespace = "app.viajor.ui"
         compileSdk = 37
         minSdk = 24
+        withHostTestBuilder {}
     }
     iosArm64()
     iosSimulatorArm64()
@@ -23,6 +24,9 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.resources)
             implementation(libs.maplibre.compose)
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
     }
 }
