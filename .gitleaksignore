@@ -1,0 +1,4 @@
+# Fake test value in an earlier commit of the secret-redaction tests (a made-up header value used to prove
+# redaction). The current tests assemble such values at run time. Reviewed by a human code owner in the PR.
+34c124fd0935fbfaea8f8908e09a53056206c919:domain/src/commonTest/kotlin/app/viajor/domain/SecretRedactionTest.kt:generic-api-key:31
+9a5983d8688380793b29e9a3682e9af52e2494f3:domain/src/commonTest/kotlin/app/viajor/domain/SecretRedactionTest.kt:generic-api-key:13
