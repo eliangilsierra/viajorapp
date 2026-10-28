@@ -46,6 +46,6 @@ run and passed. Updated 2026-10-27: only domain rules and a schema spike exist; 
 | SYN-01 | J10 | 0006 | `SyncRoundTripTest` | none | Not implemented |
 | SYN-02 | J11 | 0006 | `ConflictResolutionTest`, E2E | `domain/.../SyncMerge.kt` (HLC and three-way field merge as pure functions; no change files, transport, encryption or UI) | Partially implemented |
 | SYN-03 | J10 | 0006 | `RoleAndRevocationTest`, threat-model review | none | Not implemented |
-| BUD-01 | J4 | 0002 | `BudgetTest` | none | Not implemented |
+| BUD-01 | J4 | 0002 | `BudgetTest` | `domain/.../Money.kt` (exact money type and per-currency totals; no cost fields in the schema, repository or UI) | Partially implemented |
 | A11Y-01 | all | 0001 | Compose accessibility checks; M with screen reader | none | Not implemented |
 | I18N-01 | all | 0001 | `StringsCompleteTest`, RTL M | none | Not implemented |
