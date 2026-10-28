@@ -14,7 +14,7 @@ or emulator in this environment). Work is committed locally on `feature/1-projec
 | Check | Result |
 | --- | --- |
 | `./gradlew :domain:allTests` | 19 tests passed (ordering keys, overlap detection, distance estimate, tile-source rules) |
-| `./gradlew :data:allTests :data:verifyCommonMainViajorDatabaseMigration` | 11 tests passed (schema v2: constraints, ordering, soft delete, and a v1 to v2 upgrade of a populated database); migration verification passed |
+| `./gradlew :data:allTests` | 3 tests passed (SQLDelight schema v1 on in-memory SQLite) |
 | `./gradlew :androidApp:assembleDebug` | Debug APK built (about 53 MB) |
 | `./gradlew :androidApp:lintDebug` | Passed; 1 warning (`targetSdk` 36 is not the latest) |
 
@@ -70,5 +70,6 @@ Still open:
 ## Next tasks
 
 1. Turn the Waypoint palette and type into real design tokens; wire the app icon (adaptive icon layers).
-2. Repository layer and view models for trips, then the day/itinerary UI (schema v2 exists, issue #6).
-3. Install an emulator image (or connect a device) to run the app and measure startup.
+2. Schema v2 with places, days, activities; migration test with a generated baseline schema.
+3. Repository layer and view models for trips (TRP-01..03) with tests, then the day/itinerary UI.
+4. Install an emulator image (or connect a device) to run the app and measure startup.
