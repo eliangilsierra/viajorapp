@@ -97,6 +97,7 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
     val state by presenter.state.collectAsState()
     val snackbar = remember { SnackbarHostState() }
     var editing by remember { mutableStateOf<EditTarget?>(null) }
+    var addingPlace by remember { mutableStateOf(false) }
     val deletedMessage = stringResource(Res.string.activity_deleted)
     val undoLabel = stringResource(Res.string.action_undo)
 
@@ -124,6 +125,7 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
                     state.days.forEach { dayWithActivities ->
                         dayItems(
                             dayWithActivities,
+                            placesById = state.places.associateBy { it.id },
                             onToggle = { a, done -> presenter.setCompleted(a.id, done) },
                             onMove = { a, index -> presenter.move(a.id, dayWithActivities.day.id, index) },
                             onEdit = { a -> editing = EditTarget(dayWithActivities.day.id, dayWithActivities.day.date, a) },
@@ -147,14 +149,33 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
                         )
                     }
                     item(key = "add-idea") { TextButton(onClick = { editing = EditTarget(null, null, null) }) { Text(stringResource(Res.string.action_add_idea)) } }
+                    item(key = "places") {
+                        PlacesSection(state.places, onAdd = { addingPlace = true }, onDelete = { presenter.deletePlace(it.id) })
+                    }
                 }
             }
         }
     }
 
+    if (addingPlace) {
+        PlaceDialog(
+            errors = state.placeErrors,
+            onDismiss = { presenter.clearErrors(); addingPlace = false },
+            onSave = { draft ->
+                presenter.clearErrors()
+                val job = presenter.addPlace(draft)
+                scope.launch {
+                    job.join()
+                    if (presenter.state.value.placeErrors.isEmpty()) addingPlace = false
+                }
+            },
+        )
+    }
+
     editing?.let { target ->
         ActivityDialog(
             target = target,
+            places = state.places,
             timeZoneId = deps.timeZoneId,
             errors = state.errors,
             onDismiss = { presenter.clearErrors(); editing = null },
@@ -172,6 +193,7 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
 
 private fun androidx.compose.foundation.lazy.LazyListScope.dayItems(
     day: DayWithActivities,
+    placesById: Map<String, app.viajor.data.PlaceRecord>,
     onToggle: (ActivityRecord, Boolean) -> Unit,
     onMove: (ActivityRecord, Int) -> Unit,
     onEdit: (ActivityRecord) -> Unit,
@@ -184,14 +206,17 @@ private fun androidx.compose.foundation.lazy.LazyListScope.dayItems(
     }
     items(day.activities, key = { it.id }) { a ->
         val index = day.activities.indexOf(a)
-        ActivityRow(
-            a, canMoveUp = index > 0, canMoveDown = index < day.activities.lastIndex,
-            onToggle = { onToggle(a, it) },
-            onMoveUp = { onMove(a, index - 1) },
-            onMoveDown = { onMove(a, index + 1) },
-            onEdit = { onEdit(a) },
-            onDelete = { onDelete(a) },
-        )
+        Column {
+            ActivityRow(
+                a, canMoveUp = index > 0, canMoveDown = index < day.activities.lastIndex,
+                onToggle = { onToggle(a, it) },
+                onMoveUp = { onMove(a, index - 1) },
+                onMoveDown = { onMove(a, index + 1) },
+                onEdit = { onEdit(a) },
+                onDelete = { onDelete(a) },
+            )
+            day.activities.getOrNull(index + 1)?.let { next -> EstimateLine(a, next, placesById) }
+        }
     }
     item(key = "add-${day.day.id}") { TextButton(onClick = onAdd) { Text(stringResource(Res.string.action_add_activity)) } }
 }
@@ -249,6 +274,7 @@ private fun ActivityRow(
 @Composable
 private fun ActivityDialog(
     target: EditTarget,
+    places: List<app.viajor.data.PlaceRecord>,
     timeZoneId: String,
     errors: List<app.viajor.data.ActivityError>,
     onDismiss: () -> Unit,
@@ -260,6 +286,7 @@ private fun ActivityDialog(
     var startText by remember { mutableStateOf(existing?.start?.hhmm().orEmpty()) }
     var endText by remember { mutableStateOf(existing?.end?.hhmm().orEmpty()) }
     var timeError by remember { mutableStateOf(false) }
+    var placeId by remember { mutableStateOf(existing?.placeId) }
     val canHaveTimes = target.dayDate != null || existing?.start != null
 
     AlertDialog(
@@ -276,6 +303,7 @@ private fun ActivityDialog(
                 } else if (target.dayId != null) {
                     Text(stringResource(Res.string.times_need_date), style = MaterialTheme.typography.bodySmall)
                 }
+                if (places.isNotEmpty()) PlacePicker(places, placeId) { placeId = it }
                 if (timeError) Text(stringResource(Res.string.error_time_format), color = MaterialTheme.colorScheme.error)
                 errors.forEach { Text(it.message(), color = MaterialTheme.colorScheme.error) }
             }
@@ -295,7 +323,7 @@ private fun ActivityDialog(
                         start = if (hasTimes && start != null) LocalDateTime(date!!, start) else null,
                         end = if (hasTimes && end != null) LocalDateTime(date!!, end) else null,
                         zoneId = if (hasTimes) existing?.zoneId ?: timeZoneId else existing?.zoneId,
-                        placeId = existing?.placeId,
+                        placeId = placeId,
                         kind = existing?.kind ?: app.viajor.data.ActivityKind.ACTIVITY,
                     ),
                 )

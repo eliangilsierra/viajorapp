@@ -59,4 +59,22 @@
     <string name="trip_dates">%1$s to %2$s</string>
     <string name="trip_undated">No dates yet</string>
     <string name="action_more">More actions</string>
+    <string name="section_places">Places</string>
+    <string name="action_add_place">Add a place</string>
+    <string name="field_place_name">Name</string>
+    <string name="field_place_address">Address (optional)</string>
+    <string name="field_latitude">Latitude (optional, for example 38.7223)</string>
+    <string name="field_longitude">Longitude (optional, for example -9.1393)</string>
+    <string name="error_place_empty_name">Enter a name for the place</string>
+    <string name="error_place_name_too_long">The name is too long</string>
+    <string name="error_place_only_one_coordinate">Enter both latitude and longitude, or neither</string>
+    <string name="error_place_coordinates_range">Latitude must be between -90 and 90, and longitude between -180 and 180</string>
+    <string name="error_number_format">Use a decimal number such as 38.7223</string>
+    <string name="field_place">Place</string>
+    <string name="place_none">No place</string>
+    <string name="place_no_coordinates">no coordinates</string>
+    <string name="estimate_line">About %1$s, %2$s on foot. This is a straight-line estimate, not a route.</string>
+    <string name="unit_meters">%1$d m</string>
+    <string name="unit_km">%1$s km</string>
+    <string name="unit_minutes">%1$d min</string>
 </resources>
