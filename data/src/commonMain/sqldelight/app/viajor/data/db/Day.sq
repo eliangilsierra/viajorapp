@@ -34,3 +34,6 @@ UPDATE trip_day SET date = ?, deleted_at = ?, updated_at_hlc = ?, updated_by = ?
 
 countActivitiesForDay:
 SELECT COUNT(*) FROM activity WHERE day_id = ? AND deleted_at IS NULL;
+
+deleteAllDays:
+DELETE FROM trip_day;

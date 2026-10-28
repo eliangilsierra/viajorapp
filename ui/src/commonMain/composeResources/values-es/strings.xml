@@ -77,4 +77,20 @@
     <string name="unit_meters">%1$d m</string>
     <string name="unit_km">%1$s km</string>
     <string name="unit_minutes">%1$d min</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_privacy_title">Tus datos</string>
+    <string name="settings_privacy_body">Tus viajes se guardan solo en este dispositivo. Viajorapp no tiene cuentas, servidor ni analítica. Un archivo de copia contiene tus viajes y nunca claves.</string>
+    <string name="action_export_backup">Exportar una copia</string>
+    <string name="action_restore_backup">Restaurar una copia</string>
+    <string name="action_delete_all">Borrar todos mis datos</string>
+    <string name="delete_all_title">¿Borrar todo?</string>
+    <string name="delete_all_body">Se borrarán todos los viajes, días, lugares y actividades de este dispositivo. No se puede deshacer. Las copias que guardaste no se tocan.</string>
+    <string name="action_delete_all_confirm">Borrar todo</string>
+    <string name="msg_exported">Copia guardada</string>
+    <string name="msg_restored">Viajes restaurados: %1$d. Actividades restauradas: %2$d. Tus viajes actuales no se modificaron.</string>
+    <string name="msg_restore_failed">Ese archivo no es una copia válida de Viajorapp. No se cambió nada.</string>
+    <string name="msg_erased">Se borraron todos los datos</string>
+    <string name="msg_failed">Algo salió mal. No se cambió nada.</string>
+    <string name="msg_cancelled">Cancelado</string>
 </resources>

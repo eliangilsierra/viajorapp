@@ -37,3 +37,10 @@ UPDATE trip SET title = ?, description = ?, start_date = ?, end_date = ?, update
 
 setArchived:
 UPDATE trip SET archived_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+-- Backup: every trip that has not been deleted, archived ones included.
+selectAllForBackup:
+SELECT * FROM trip WHERE deleted_at IS NULL ORDER BY start_date IS NULL, start_date, title, id;
+
+deleteAllTrips:
+DELETE FROM trip;

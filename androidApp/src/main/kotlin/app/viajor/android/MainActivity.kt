@@ -10,6 +10,9 @@ import app.viajor.ui.Navigator
 import app.viajor.ui.ViajorApp
 
 class MainActivity : ComponentActivity() {
+    // Registers the file picker launchers, which must happen before the activity is started.
+    private val files = AndroidFileAccess(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -18,7 +21,7 @@ class MainActivity : ComponentActivity() {
             // The back stack is not saved across process or configuration changes yet.
             val navigator = remember { Navigator() }
             BackHandler(enabled = navigator.canGoBack) { navigator.back() }
-            ViajorApp(dependencies, navigator)
+            ViajorApp(dependencies, files, navigator)
         }
     }
 }
