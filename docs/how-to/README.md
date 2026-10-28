@@ -6,4 +6,4 @@ troubleshoot) live here too.
 
 | Guide | Task |
 | --- | --- |
-| None yet | — |
+| [Build and test Viajorapp](build-and-test.md) | Build the Android app and run every check |
