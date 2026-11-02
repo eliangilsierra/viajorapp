@@ -32,6 +32,8 @@ sealed interface Screen {
 
     data class Import(val tripId: String) : Screen
 
+    data class Map(val tripId: String) : Screen
+
     /** A short text form that survives rotation and process death; see [Navigator.Saver]. */
     fun encode(): String = when (this) {
         TripList -> "list"
@@ -40,6 +42,7 @@ sealed interface Screen {
         Settings -> "settings"
         Search -> "search"
         is Import -> "import:$tripId"
+        is Map -> "map:$tripId"
     }
 
     companion object {
@@ -48,6 +51,7 @@ sealed interface Screen {
             text == "search" -> Search
             text.startsWith("edit:") -> TripEditor(text.removePrefix("edit:").ifEmpty { null })
             text.startsWith("import:") -> Import(text.removePrefix("import:"))
+            text.startsWith("map:") -> Map(text.removePrefix("map:"))
             text.startsWith("trip:") -> Itinerary(text.removePrefix("trip:"))
             else -> TripList
         }

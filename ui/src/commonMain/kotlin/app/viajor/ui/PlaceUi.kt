@@ -35,6 +35,7 @@ import viajorapp.ui.generated.resources.action_delete
 import viajorapp.ui.generated.resources.action_edit
 import viajorapp.ui.generated.resources.action_edit_place
 import viajorapp.ui.generated.resources.action_save
+import viajorapp.ui.generated.resources.action_show_map
 import viajorapp.ui.generated.resources.error_number_format
 import viajorapp.ui.generated.resources.error_place_coordinates_range
 import viajorapp.ui.generated.resources.error_place_empty_name
@@ -88,7 +89,7 @@ internal fun kmText(meters: Long): String {
 }
 
 @Composable
-internal fun PlacesSection(places: List<PlaceRecord>, onAdd: () -> Unit, onEdit: (PlaceRecord) -> Unit, onDelete: (PlaceRecord) -> Unit) {
+internal fun PlacesSection(places: List<PlaceRecord>, onAdd: () -> Unit, onMap: () -> Unit, onEdit: (PlaceRecord) -> Unit, onDelete: (PlaceRecord) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(stringResource(Res.string.section_places), style = MaterialTheme.typography.titleMedium)
         places.forEach { place ->
@@ -107,6 +108,7 @@ internal fun PlacesSection(places: List<PlaceRecord>, onAdd: () -> Unit, onEdit:
             }
         }
         TextButton(onClick = onAdd) { Text(stringResource(Res.string.action_add_place)) }
+        if (places.isNotEmpty()) TextButton(onClick = onMap) { Text(stringResource(Res.string.action_show_map)) }
     }
 }
 
