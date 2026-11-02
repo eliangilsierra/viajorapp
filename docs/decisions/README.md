@@ -19,3 +19,4 @@ merging its Pull Request into `develop`.
 | [ADR-0004](ADR-0004-routing-and-travel-estimates.md) | Routing provider interface and travel estimates | Accepted | 2026-10-27 |
 | [ADR-0005](ADR-0005-optional-ai-byok.md) | Optional AI with bring-your-own-key | Accepted | 2026-10-27 |
 | [ADR-0006](ADR-0006-optional-sync-and-collaboration.md) | Optional sync through encrypted change files | Accepted | 2026-10-27 |
+| [ADR-0007](ADR-0007-fts4-instead-of-fts5.md) | FTS4 instead of FTS5 for full-text search | Proposed | 2026-10-28 |

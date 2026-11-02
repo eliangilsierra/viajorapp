@@ -35,8 +35,8 @@ class MigrationTest {
             0,
         )
 
-        assertEquals(2L, ViajorDatabase.Schema.version)
-        ViajorDatabase.Schema.migrate(driver, 1L, 2L)
+        assertEquals(3L, ViajorDatabase.Schema.version)
+        ViajorDatabase.Schema.migrate(driver, 1L, 3L)
 
         val db = ViajorDatabase(driver)
         assertEquals(listOf("Old trip"), db.tripQueries.selectActive().executeAsList().map { it.title })
@@ -54,6 +54,31 @@ class MigrationTest {
             },
             0,
         ).value
-        assertEquals(listOf("activity", "place", "trip", "trip_day"), tables.filter { !it.startsWith("sqlite_") })
+        assertEquals(
+            listOf("activity", "place", "search_index", "trip", "trip_day"),
+            tables.filter { !it.startsWith("sqlite_") && !it.startsWith("search_index_") },
+        )
+    }
+
+    @Test
+    fun upgradingAPopulatedV2DatabaseMakesExistingRowsSearchable() {
+        val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY, Properties().apply { put("foreign_keys", "true") })
+        driver.execute(null, v1, 0)
+        driver.execute(null, "CREATE INDEX trip_active ON trip(deleted_at, archived_at)", 0)
+        driver.execute(null, "INSERT INTO trip(id, title, updated_at_hlc, updated_by) VALUES ('t1', 'Old trip', 'h', 'd')", 0)
+        ViajorDatabase.Schema.migrate(driver, 1L, 2L)
+        driver.execute(null, "INSERT INTO place(id, trip_id, name, address, updated_at_hlc, updated_by) VALUES ('p1', 't1', 'Alfama viewpoint', 'Rua Norte', 'h', 'd')", 0)
+        driver.execute(null, "INSERT INTO trip_day(id, trip_id, day_index, updated_at_hlc, updated_by) VALUES ('d1', 't1', 1, 'h', 'd')", 0)
+        driver.execute(
+            null,
+            "INSERT INTO activity(id, trip_id, day_id, title, notes, sort_key, updated_at_hlc, updated_by) VALUES ('a1', 't1', 'd1', 'Café da manhã', 'pastéis', 'V', 'h', 'd')",
+            0,
+        )
+
+        ViajorDatabase.Schema.migrate(driver, 2L, 3L)
+
+        val db = ViajorDatabase(driver)
+        assertEquals(listOf("p1"), db.searchQueries.search("alfama*", null, 10).executeAsList().map { it.ref_id })
+        assertEquals(listOf("a1"), db.searchQueries.search("cafe* past*", null, 10).executeAsList().map { it.ref_id })
     }
 }
