@@ -33,3 +33,6 @@ SELECT * FROM place WHERE id = ?;
 
 updatePlace:
 UPDATE place SET name = ?, address = ?, lat = ?, lon = ?, notes = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+deleteAllPlaces:
+DELETE FROM place;

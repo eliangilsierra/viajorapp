@@ -44,3 +44,7 @@ WHERE t.deleted_at IS NULL
     OR (s.kind = 'activity' AND a.id IS NOT NULL AND a.deleted_at IS NULL))
 ORDER BY s.kind, s.body
 LIMIT :limit;
+
+-- Used by "delete all data": soft-deleted text must not survive in the index either.
+clearIndex:
+DELETE FROM search_index;
