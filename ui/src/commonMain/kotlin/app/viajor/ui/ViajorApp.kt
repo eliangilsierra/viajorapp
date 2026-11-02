@@ -5,11 +5,11 @@ import androidx.compose.runtime.key
 import app.viajor.designsystem.ViajorTheme
 
 /**
- * Application root shared by Android and iOS. The platform host builds [AppDependencies] and a [Navigator]
- * and wires its back button to [Navigator.back]. Screens keep no state across a host restart yet.
+ * Application root shared by Android and iOS. The platform host builds [AppDependencies], a [FileAccess] and a
+ * [Navigator] and wires its back button to [Navigator.back]. Screens keep no state across a host restart yet.
  */
 @Composable
-fun ViajorApp(deps: AppDependencies, navigator: Navigator) {
+fun ViajorApp(deps: AppDependencies, files: FileAccess, navigator: Navigator) {
     ViajorTheme {
         val screen = navigator.current
         // The key gives every screen its own presenter and drops it when the user leaves.
@@ -18,6 +18,7 @@ fun ViajorApp(deps: AppDependencies, navigator: Navigator) {
                 Screen.TripList -> TripListScreen(deps, navigator)
                 is Screen.TripEditor -> TripEditorScreen(deps, navigator, screen.tripId)
                 is Screen.Itinerary -> ItineraryScreen(deps, navigator, screen.tripId)
+                Screen.Settings -> SettingsScreen(deps, files, navigator)
             }
         }
     }

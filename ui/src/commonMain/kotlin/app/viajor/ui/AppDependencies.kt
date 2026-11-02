@@ -3,6 +3,7 @@ package app.viajor.ui
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import app.viajor.data.BackupService
 import app.viajor.data.ItineraryRepository
 import app.viajor.data.TripRepository
 
@@ -10,6 +11,7 @@ import app.viajor.data.TripRepository
 class AppDependencies(
     val trips: TripRepository,
     val itinerary: ItineraryRepository,
+    val backup: BackupService,
     /** IANA id of the device's time zone, used for activity times (ADR-0002). */
     val timeZoneId: String,
 )
@@ -20,6 +22,8 @@ sealed interface Screen {
     data class TripEditor(val tripId: String?) : Screen
 
     data class Itinerary(val tripId: String) : Screen
+
+    data object Settings : Screen
 }
 
 /** A minimal back stack. The platform host calls [back] from its back button or gesture. */
