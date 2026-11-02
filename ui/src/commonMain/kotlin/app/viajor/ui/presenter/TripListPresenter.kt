@@ -1,6 +1,7 @@
 package app.viajor.ui.presenter
 
 import app.viajor.data.TripRecord
+import app.viajor.data.TripSummary
 import app.viajor.data.TripRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ enum class ListStatus { LOADING, EMPTY, CONTENT, ERROR }
 /** What the trip list screen shows. [undoableDelete] is set right after a delete so the screen can offer Undo. */
 data class TripListState(
     val status: ListStatus = ListStatus.LOADING,
-    val trips: List<TripRecord> = emptyList(),
+    val trips: List<TripSummary> = emptyList(),
     val undoableDelete: TripRecord? = null,
 )
 
@@ -30,7 +31,7 @@ class TripListPresenter(private val repository: TripRepository, private val scop
 
     init {
         scope.launch {
-            repository.observeTrips()
+            repository.observeTripSummaries()
                 .catch { _state.update { it.copy(status = ListStatus.ERROR) } }
                 .collect { trips ->
                     _state.update { it.copy(status = if (trips.isEmpty()) ListStatus.EMPTY else ListStatus.CONTENT, trips = trips) }

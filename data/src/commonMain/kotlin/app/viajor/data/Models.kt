@@ -14,6 +14,9 @@ data class TripRecord(
     val archived: Boolean,
 )
 
+/** A trip with the counts shown on the home screen. */
+data class TripSummary(val trip: TripRecord, val dayCount: Int, val activityCount: Int, val placeCount: Int)
+
 data class DayRecord(val id: String, val tripId: String, val index: Int, val date: LocalDate?, val title: String?)
 
 data class PlaceRecord(
