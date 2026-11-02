@@ -46,7 +46,6 @@ import app.viajor.ui.presenter.ListStatus
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalTime
 import org.jetbrains.compose.resources.stringResource
 import viajorapp.ui.generated.resources.Res
 import viajorapp.ui.generated.resources.action_add_activity
@@ -65,11 +64,13 @@ import viajorapp.ui.generated.resources.activity_deleted
 import viajorapp.ui.generated.resources.cd_mark_done
 import viajorapp.ui.generated.resources.day_heading
 import viajorapp.ui.generated.resources.day_heading_dated
-import viajorapp.ui.generated.resources.error_time_format
 import viajorapp.ui.generated.resources.field_activity_title
-import viajorapp.ui.generated.resources.field_end_time
 import viajorapp.ui.generated.resources.field_notes
-import viajorapp.ui.generated.resources.field_start_time
+import viajorapp.ui.generated.resources.action_move_to
+import viajorapp.ui.generated.resources.label_end_time
+import viajorapp.ui.generated.resources.label_start_time
+import viajorapp.ui.generated.resources.move_to_ideas
+import viajorapp.ui.generated.resources.move_to_title
 import viajorapp.ui.generated.resources.ideas_heading
 import viajorapp.ui.generated.resources.load_error
 import viajorapp.ui.generated.resources.no_activities
@@ -79,13 +80,6 @@ import viajorapp.ui.generated.resources.trip_not_found
 
 /** What the activity dialog edits: a new activity (existing == null) on [dayId], or an existing one. */
 private data class EditTarget(val dayId: String?, val dayDate: LocalDate?, val existing: ActivityRecord?)
-
-private fun parseTime(text: String): Pair<LocalTime?, Boolean> {
-    val t = text.trim()
-    if (t.isEmpty()) return null to true
-    val m = Regex("^([01]?\\d|2[0-3]):([0-5]\\d)$").matchEntire(t) ?: return null to false
-    return LocalTime(m.groupValues[1].toInt(), m.groupValues[2].toInt()) to true
-}
 
 private fun LocalDateTime.hhmm() = hour.toString().padStart(2, '0') + ":" + minute.toString().padStart(2, '0')
 
@@ -98,6 +92,8 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
     val snackbar = remember { SnackbarHostState() }
     var editing by remember { mutableStateOf<EditTarget?>(null) }
     var addingPlace by remember { mutableStateOf(false) }
+    var editingPlace by remember { mutableStateOf<app.viajor.data.PlaceRecord?>(null) }
+    var movingActivity by remember { mutableStateOf<ActivityRecord?>(null) }
     val deletedMessage = stringResource(Res.string.activity_deleted)
     val undoLabel = stringResource(Res.string.action_undo)
 
@@ -129,6 +125,7 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
                             onToggle = { a, done -> presenter.setCompleted(a.id, done) },
                             onMove = { a, index -> presenter.move(a.id, dayWithActivities.day.id, index) },
                             onEdit = { a -> editing = EditTarget(dayWithActivities.day.id, dayWithActivities.day.date, a) },
+                            onMoveTo = { a -> movingActivity = a },
                             onDelete = { a -> presenter.delete(a) },
                             onAdd = { editing = EditTarget(dayWithActivities.day.id, dayWithActivities.day.date, null) },
                         )
@@ -145,29 +142,46 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
                             onMoveUp = { presenter.move(a.id, null, index - 1) },
                             onMoveDown = { presenter.move(a.id, null, index + 1) },
                             onEdit = { editing = EditTarget(null, null, a) },
+                            onMoveTo = { movingActivity = a },
                             onDelete = { presenter.delete(a) },
                         )
                     }
                     item(key = "add-idea") { TextButton(onClick = { editing = EditTarget(null, null, null) }) { Text(stringResource(Res.string.action_add_idea)) } }
                     item(key = "places") {
-                        PlacesSection(state.places, onAdd = { addingPlace = true }, onDelete = { presenter.deletePlace(it.id) })
+                        PlacesSection(state.places, onAdd = { addingPlace = true }, onEdit = { editingPlace = it }, onDelete = { presenter.deletePlace(it.id) })
                     }
                 }
             }
         }
     }
 
-    if (addingPlace) {
+    if (addingPlace || editingPlace != null) {
+        val existingPlace = editingPlace
         PlaceDialog(
+            initial = existingPlace,
             errors = state.placeErrors,
-            onDismiss = { presenter.clearErrors(); addingPlace = false },
+            onDismiss = { presenter.clearErrors(); addingPlace = false; editingPlace = null },
             onSave = { draft ->
                 presenter.clearErrors()
-                val job = presenter.addPlace(draft)
+                val job = if (existingPlace == null) presenter.addPlace(draft) else presenter.editPlace(existingPlace.id, draft)
                 scope.launch {
                     job.join()
-                    if (presenter.state.value.placeErrors.isEmpty()) addingPlace = false
+                    if (presenter.state.value.placeErrors.isEmpty()) {
+                        addingPlace = false
+                        editingPlace = null
+                    }
                 }
+            },
+        )
+    }
+
+    movingActivity?.let { activity ->
+        MoveDialog(
+            days = state.days.map { it.day },
+            onDismiss = { movingActivity = null },
+            onPick = { dayId ->
+                presenter.move(activity.id, dayId, Int.MAX_VALUE)
+                movingActivity = null
             },
         )
     }
@@ -197,6 +211,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.dayItems(
     onToggle: (ActivityRecord, Boolean) -> Unit,
     onMove: (ActivityRecord, Int) -> Unit,
     onEdit: (ActivityRecord) -> Unit,
+    onMoveTo: (ActivityRecord) -> Unit,
     onDelete: (ActivityRecord) -> Unit,
     onAdd: () -> Unit,
 ) {
@@ -213,6 +228,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.dayItems(
                 onMoveUp = { onMove(a, index - 1) },
                 onMoveDown = { onMove(a, index + 1) },
                 onEdit = { onEdit(a) },
+                onMoveTo = { onMoveTo(a) },
                 onDelete = { onDelete(a) },
             )
             day.activities.getOrNull(index + 1)?.let { next -> EstimateLine(a, next, placesById) }
@@ -240,6 +256,7 @@ private fun ActivityRow(
     onMoveUp: () -> Unit,
     onMoveDown: () -> Unit,
     onEdit: () -> Unit,
+    onMoveTo: () -> Unit,
     onDelete: () -> Unit,
 ) {
     var menu by remember { mutableStateOf(false) }
@@ -265,6 +282,7 @@ private fun ActivityRow(
                 DropdownMenuItem(text = { Text(stringResource(Res.string.action_edit)) }, onClick = { menu = false; onEdit() })
                 DropdownMenuItem(text = { Text(stringResource(Res.string.action_move_up)) }, enabled = canMoveUp, onClick = { menu = false; onMoveUp() })
                 DropdownMenuItem(text = { Text(stringResource(Res.string.action_move_down)) }, enabled = canMoveDown, onClick = { menu = false; onMoveDown() })
+                DropdownMenuItem(text = { Text(stringResource(Res.string.action_move_to)) }, onClick = { menu = false; onMoveTo() })
                 DropdownMenuItem(text = { Text(stringResource(Res.string.action_delete)) }, onClick = { menu = false; onDelete() })
             }
         }
@@ -283,9 +301,8 @@ private fun ActivityDialog(
     val existing = target.existing
     var title by remember { mutableStateOf(existing?.title.orEmpty()) }
     var notes by remember { mutableStateOf(existing?.notes.orEmpty()) }
-    var startText by remember { mutableStateOf(existing?.start?.hhmm().orEmpty()) }
-    var endText by remember { mutableStateOf(existing?.end?.hhmm().orEmpty()) }
-    var timeError by remember { mutableStateOf(false) }
+    var startTime by remember { mutableStateOf(existing?.start?.time) }
+    var endTime by remember { mutableStateOf(existing?.end?.time) }
     var placeId by remember { mutableStateOf(existing?.placeId) }
     val canHaveTimes = target.dayDate != null || existing?.start != null
 
@@ -297,24 +314,21 @@ private fun ActivityDialog(
                 OutlinedTextField(title, { title = it }, label = { Text(stringResource(Res.string.field_activity_title)) }, singleLine = true)
                 OutlinedTextField(notes, { notes = it }, label = { Text(stringResource(Res.string.field_notes)) })
                 if (target.dayDate != null) {
-                    OutlinedTextField(startText, { startText = it }, label = { Text(stringResource(Res.string.field_start_time)) }, singleLine = true)
-                    OutlinedTextField(endText, { endText = it }, label = { Text(stringResource(Res.string.field_end_time)) }, singleLine = true)
+                    TimeField(stringResource(Res.string.label_start_time), startTime, { startTime = it })
+                    TimeField(stringResource(Res.string.label_end_time), endTime, { endTime = it })
                     Text(stringResource(Res.string.time_zone_note, timeZoneId), style = MaterialTheme.typography.bodySmall)
                 } else if (target.dayId != null) {
                     Text(stringResource(Res.string.times_need_date), style = MaterialTheme.typography.bodySmall)
                 }
                 if (places.isNotEmpty()) PlacePicker(places, placeId) { placeId = it }
-                if (timeError) Text(stringResource(Res.string.error_time_format), color = MaterialTheme.colorScheme.error)
                 errors.forEach { Text(it.message(), color = MaterialTheme.colorScheme.error) }
             }
         },
         confirmButton = {
             TextButton(onClick = {
                 val date = target.dayDate
-                val (start, startOk) = parseTime(startText)
-                val (end, endOk) = parseTime(endText)
-                timeError = !startOk || !endOk
-                if (timeError) return@TextButton
+                val start = startTime
+                val end = endTime
                 val hasTimes = canHaveTimes && date != null && (start != null || end != null)
                 onSave(
                     ActivityDraft(
@@ -329,6 +343,26 @@ private fun ActivityDialog(
                 )
             }) { Text(stringResource(Res.string.action_save)) }
         },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(Res.string.action_cancel)) } },
+    )
+}
+
+@Composable
+private fun MoveDialog(days: List<app.viajor.data.DayRecord>, onDismiss: () -> Unit, onPick: (String?) -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(Res.string.move_to_title)) },
+        text = {
+            Column {
+                days.forEach { day ->
+                    val date = day.date
+                    val label = if (date != null) stringResource(Res.string.day_heading_dated, day.index, date.toString()) else stringResource(Res.string.day_heading, day.index)
+                    TextButton(onClick = { onPick(day.id) }) { Text(label) }
+                }
+                TextButton(onClick = { onPick(null) }) { Text(stringResource(Res.string.move_to_ideas)) }
+            }
+        },
+        confirmButton = {},
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(Res.string.action_cancel)) } },
     )
 }

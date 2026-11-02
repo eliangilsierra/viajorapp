@@ -129,6 +129,14 @@ class ItineraryPresenter(
         }
     }
 
+    fun editPlace(id: String, draft: PlaceDraft) = launchGuarded {
+        when (val r = itinerary.updatePlace(id, draft)) {
+            is SavePlaceResult.Invalid -> _state.update { it.copy(placeErrors = r.errors) }
+            is SavePlaceResult.Saved -> _state.update { it.copy(placeErrors = emptyList()) }
+            SavePlaceResult.NotFound -> Unit
+        }
+    }
+
     fun deletePlace(id: String) = launchGuarded { itinerary.deletePlace(id) }
 
     fun clearErrors() = _state.update { it.copy(errors = emptyList(), placeErrors = emptyList()) }

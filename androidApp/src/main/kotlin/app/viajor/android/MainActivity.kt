@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import app.viajor.ui.Navigator
 import app.viajor.ui.ViajorApp
 
@@ -18,8 +18,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val dependencies = (application as ViajorApplication).dependencies
         setContent {
-            // The back stack is not saved across process or configuration changes yet.
-            val navigator = remember { Navigator() }
+            // The back stack (screen ids only) survives rotation and process death.
+            val navigator = rememberSaveable(saver = Navigator.Saver) { Navigator() }
             BackHandler(enabled = navigator.canGoBack) { navigator.back() }
             ViajorApp(dependencies, files, navigator)
         }
