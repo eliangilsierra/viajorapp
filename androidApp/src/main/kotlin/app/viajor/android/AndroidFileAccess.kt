@@ -1,7 +1,10 @@
 package app.viajor.android
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import app.viajor.ui.FileAccess
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +20,15 @@ class AndroidFileAccess(private val activity: ComponentActivity) : FileAccess {
     private var saveContinuation: ((Uri?) -> Unit)? = null
     private var pickContinuation: ((Uri?) -> Unit)? = null
 
-    private val saveLauncher = activity.registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+    /** Like CreateDocument but with the mime type chosen per call, so a CSV is not saved as .json. */
+    private class CreateTypedDocument : ActivityResultContract<Pair<String, String>, Uri?>() {
+        override fun createIntent(context: Context, input: Pair<String, String>): Intent =
+            Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType(input.second).putExtra(Intent.EXTRA_TITLE, input.first)
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? = if (resultCode == android.app.Activity.RESULT_OK) intent?.data else null
+    }
+
+    private val saveLauncher = activity.registerForActivityResult(CreateTypedDocument()) { uri ->
         saveContinuation?.invoke(uri)
         saveContinuation = null
     }
@@ -30,7 +41,7 @@ class AndroidFileAccess(private val activity: ComponentActivity) : FileAccess {
         val uri = suspendCancellableCoroutine<Uri?> { continuation ->
             saveContinuation = { continuation.resume(it) }
             continuation.invokeOnCancellation { saveContinuation = null }
-            saveLauncher.launch(suggestedName)
+            saveLauncher.launch(suggestedName to mimeType)
         } ?: return false
         withContext(Dispatchers.IO) {
             val stream = activity.contentResolver.openOutputStream(uri, "wt") ?: error("could not open the chosen file")

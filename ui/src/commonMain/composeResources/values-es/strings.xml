@@ -126,4 +126,8 @@
     <string name="import_error_table">Ese archivo no tiene la columna title.</string>
     <string name="import_error_bad_file">No se pudo leer ese archivo como CSV.</string>
     <string name="import_error_failed">Algo salió mal. No se añadió nada.</string>
+    <string name="action_export">Exportar</string>
+    <string name="export_markdown">Como Markdown</string>
+    <string name="export_csv">Como CSV</string>
+    <string name="msg_plan_saved">Archivo guardado</string>
 </resources>
