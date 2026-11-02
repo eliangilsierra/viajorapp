@@ -110,4 +110,20 @@
     <string name="search_start">Type to search all your trips</string>
     <string name="search_kind_place">Place</string>
     <string name="search_kind_activity">Activity</string>
+    <string name="action_import">Import</string>
+    <string name="import_title">Import into this trip</string>
+    <string name="import_paste_hint">Paste a plan: days, times and activities, one per line</string>
+    <string name="action_review">Review</string>
+    <string name="action_choose_csv">Choose a CSV file</string>
+    <string name="import_csv_hint">A CSV file needs a header row with the columns title, day, start, end and notes (only title is required).</string>
+    <string name="import_review_title">Review what was found</string>
+    <string name="import_uncertain">Not sure about this one: check it</string>
+    <string name="import_unparsed">%1$d lines were not understood and will be left out.</string>
+    <string name="action_import_n">Import %1$d selected</string>
+    <string name="import_done">Added %1$d activities</string>
+    <string name="import_done_failed">%1$d could not be added.</string>
+    <string name="import_error_nothing">Nothing that looks like an activity was found.</string>
+    <string name="import_error_table">That file has no title column.</string>
+    <string name="import_error_bad_file">That file could not be read as CSV.</string>
+    <string name="import_error_failed">Something went wrong. Nothing was added.</string>
 </resources>
