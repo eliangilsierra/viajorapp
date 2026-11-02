@@ -11,6 +11,8 @@ kotlin {
         compileSdk = 37
         minSdk = 24
         withHostTestBuilder {}
+        // Without this the Compose resources (strings) are not packaged into the app and it crashes at launch.
+        androidResources { enable = true }
     }
     iosArm64()
     iosSimulatorArm64()

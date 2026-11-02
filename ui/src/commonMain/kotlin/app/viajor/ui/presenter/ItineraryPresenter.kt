@@ -11,6 +11,7 @@ import app.viajor.data.TripRecord
 import app.viajor.data.TripRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -118,8 +119,8 @@ class ItineraryPresenter(
 
     fun clearErrors() = _state.update { it.copy(errors = emptyList()) }
 
-    private fun launchGuarded(block: suspend () -> Unit) {
-        scope.launch {
+    private fun launchGuarded(block: suspend () -> Unit): Job {
+        return scope.launch {
             try {
                 block()
             } catch (e: CancellationException) {
