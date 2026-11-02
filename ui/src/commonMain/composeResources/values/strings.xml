@@ -104,4 +104,10 @@
     <string name="move_to_title">Move to</string>
     <string name="move_to_ideas">Ideas (no day)</string>
     <string name="action_edit_place">Edit place</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Search places and activities</string>
+    <string name="search_empty">Nothing found</string>
+    <string name="search_start">Type to search all your trips</string>
+    <string name="search_kind_place">Place</string>
+    <string name="search_kind_activity">Activity</string>
 </resources>

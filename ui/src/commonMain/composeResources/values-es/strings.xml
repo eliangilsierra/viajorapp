@@ -104,4 +104,10 @@
     <string name="move_to_title">Mover a</string>
     <string name="move_to_ideas">Ideas (sin día)</string>
     <string name="action_edit_place">Editar lugar</string>
+    <string name="action_search">Buscar</string>
+    <string name="search_hint">Buscar lugares y actividades</string>
+    <string name="search_empty">No se encontró nada</string>
+    <string name="search_start">Escribe para buscar en todos tus viajes</string>
+    <string name="search_kind_place">Lugar</string>
+    <string name="search_kind_activity">Actividad</string>
 </resources>

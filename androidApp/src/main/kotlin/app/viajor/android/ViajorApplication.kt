@@ -6,6 +6,7 @@ import app.viajor.data.ChangeStamper
 import app.viajor.data.DatabaseDriverFactory
 import app.viajor.data.SqlBackupService
 import app.viajor.data.SqlItineraryRepository
+import app.viajor.data.SqlSearchRepository
 import app.viajor.data.SqlTripRepository
 import app.viajor.data.db.ViajorDatabase
 import app.viajor.ui.AppDependencies
@@ -21,6 +22,7 @@ class ViajorApplication : Application() {
             trips = SqlTripRepository(database, stamper),
             itinerary = SqlItineraryRepository(database, stamper),
             backup = SqlBackupService(database, stamper),
+            search = SqlSearchRepository(database),
             timeZoneId = TimeZone.currentSystemDefault().id,
         )
     }
