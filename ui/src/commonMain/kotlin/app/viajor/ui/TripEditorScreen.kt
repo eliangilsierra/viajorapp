@@ -22,14 +22,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.viajor.ui.presenter.TripEditorPresenter
-import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import viajorapp.ui.generated.resources.Res
 import viajorapp.ui.generated.resources.action_back
@@ -40,24 +37,12 @@ import viajorapp.ui.generated.resources.confirm_shorten_body
 import viajorapp.ui.generated.resources.confirm_shorten_title
 import viajorapp.ui.generated.resources.editor_title_edit
 import viajorapp.ui.generated.resources.editor_title_new
-import viajorapp.ui.generated.resources.error_date_format
 import viajorapp.ui.generated.resources.field_description
-import viajorapp.ui.generated.resources.field_end_date
-import viajorapp.ui.generated.resources.field_start_date
 import viajorapp.ui.generated.resources.field_title
+import viajorapp.ui.generated.resources.label_end_date
+import viajorapp.ui.generated.resources.label_start_date
 import viajorapp.ui.generated.resources.load_error
 import viajorapp.ui.generated.resources.trip_not_found
-
-/** Parses an optional ISO date. Blank is valid and means "no date"; anything else must be YYYY-MM-DD. */
-private fun parseDate(text: String): Pair<LocalDate?, Boolean> {
-    val trimmed = text.trim()
-    if (trimmed.isEmpty()) return null to true
-    return try {
-        LocalDate.parse(trimmed) to true
-    } catch (e: IllegalArgumentException) {
-        null to false
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,27 +51,9 @@ fun TripEditorScreen(deps: AppDependencies, navigator: Navigator, tripId: String
     val presenter = remember { TripEditorPresenter(deps.trips, scope, tripId) }
     val state by presenter.state.collectAsState()
 
-    var startText by remember { mutableStateOf("") }
-    var endText by remember { mutableStateOf("") }
-    var startOk by remember { mutableStateOf(true) }
-    var endOk by remember { mutableStateOf(true) }
-
-    // When an existing trip finishes loading, fill the date fields once.
-    LaunchedEffect(state.startDate, state.endDate) {
-        if (startText.isEmpty() && state.startDate != null) startText = state.startDate.toString()
-        if (endText.isEmpty() && state.endDate != null) endText = state.endDate.toString()
-    }
     LaunchedEffect(state.savedTripId) {
         val saved = state.savedTripId ?: return@LaunchedEffect
         if (tripId == null) navigator.replace(Screen.Itinerary(saved)) else navigator.back()
-    }
-
-    fun updateDates(start: String, end: String) {
-        val (s, sOk) = parseDate(start)
-        val (e, eOk) = parseDate(end)
-        startOk = sOk
-        endOk = eOk
-        presenter.setDates(s, e)
     }
 
     Scaffold(
@@ -117,30 +84,12 @@ fun TripEditorScreen(deps: AppDependencies, navigator: Navigator, tripId: String
                 label = { Text(stringResource(Res.string.field_description)) },
                 modifier = Modifier.fillMaxWidth(),
             )
-            OutlinedTextField(
-                value = startText,
-                onValueChange = { startText = it; updateDates(it, endText) },
-                label = { Text(stringResource(Res.string.field_start_date)) },
-                isError = !startOk,
-                supportingText = { if (!startOk) Text(stringResource(Res.string.error_date_format)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            OutlinedTextField(
-                value = endText,
-                onValueChange = { endText = it; updateDates(startText, it) },
-                label = { Text(stringResource(Res.string.field_end_date)) },
-                isError = !endOk,
-                supportingText = { if (!endOk) Text(stringResource(Res.string.error_date_format)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
+            DateField(stringResource(Res.string.label_start_date), state.startDate, { presenter.setDates(it, state.endDate) })
+            DateField(stringResource(Res.string.label_end_date), state.endDate, { presenter.setDates(state.startDate, it) })
             state.errors.forEach { Text(it.message(), color = MaterialTheme.colorScheme.error) }
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(onClick = { if (startOk && endOk) presenter.save() }, enabled = !state.saving) {
-                    Text(stringResource(Res.string.action_save))
-                }
+                Button(onClick = { presenter.save() }, enabled = !state.saving) { Text(stringResource(Res.string.action_save)) }
                 OutlinedButton(onClick = { navigator.back() }) { Text(stringResource(Res.string.action_cancel)) }
             }
         }

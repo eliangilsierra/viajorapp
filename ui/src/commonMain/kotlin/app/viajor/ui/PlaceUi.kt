@@ -32,6 +32,8 @@ import viajorapp.ui.generated.resources.Res
 import viajorapp.ui.generated.resources.action_add_place
 import viajorapp.ui.generated.resources.action_cancel
 import viajorapp.ui.generated.resources.action_delete
+import viajorapp.ui.generated.resources.action_edit
+import viajorapp.ui.generated.resources.action_edit_place
 import viajorapp.ui.generated.resources.action_save
 import viajorapp.ui.generated.resources.error_number_format
 import viajorapp.ui.generated.resources.error_place_coordinates_range
@@ -86,7 +88,7 @@ internal fun kmText(meters: Long): String {
 }
 
 @Composable
-internal fun PlacesSection(places: List<PlaceRecord>, onAdd: () -> Unit, onDelete: (PlaceRecord) -> Unit) {
+internal fun PlacesSection(places: List<PlaceRecord>, onAdd: () -> Unit, onEdit: (PlaceRecord) -> Unit, onDelete: (PlaceRecord) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(stringResource(Res.string.section_places), style = MaterialTheme.typography.titleMedium)
         places.forEach { place ->
@@ -100,6 +102,7 @@ internal fun PlacesSection(places: List<PlaceRecord>, onAdd: () -> Unit, onDelet
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
+                TextButton(onClick = { onEdit(place) }) { Text(stringResource(Res.string.action_edit)) }
                 TextButton(onClick = { onDelete(place) }) { Text(stringResource(Res.string.action_delete)) }
             }
         }
@@ -108,17 +111,17 @@ internal fun PlacesSection(places: List<PlaceRecord>, onAdd: () -> Unit, onDelet
 }
 
 @Composable
-internal fun PlaceDialog(errors: List<PlaceError>, onDismiss: () -> Unit, onSave: (PlaceDraft) -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var address by remember { mutableStateOf("") }
-    var notes by remember { mutableStateOf("") }
-    var latText by remember { mutableStateOf("") }
-    var lonText by remember { mutableStateOf("") }
+internal fun PlaceDialog(initial: PlaceRecord?, errors: List<PlaceError>, onDismiss: () -> Unit, onSave: (PlaceDraft) -> Unit) {
+    var name by remember { mutableStateOf(initial?.name.orEmpty()) }
+    var address by remember { mutableStateOf(initial?.address.orEmpty()) }
+    var notes by remember { mutableStateOf(initial?.notes.orEmpty()) }
+    var latText by remember { mutableStateOf(initial?.latitude?.toString().orEmpty()) }
+    var lonText by remember { mutableStateOf(initial?.longitude?.toString().orEmpty()) }
     var numberError by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(Res.string.action_add_place)) },
+        title = { Text(stringResource(if (initial == null) Res.string.action_add_place else Res.string.action_edit_place)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(name, { name = it }, label = { Text(stringResource(Res.string.field_place_name)) }, singleLine = true)

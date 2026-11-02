@@ -93,4 +93,15 @@
     <string name="msg_erased">Se borraron todos los datos</string>
     <string name="msg_failed">Algo salió mal. No se cambió nada.</string>
     <string name="msg_cancelled">Cancelado</string>
+    <string name="label_start_date">Fecha de inicio</string>
+    <string name="label_end_date">Fecha de fin</string>
+    <string name="label_start_time">Hora de inicio</string>
+    <string name="label_end_time">Hora de fin</string>
+    <string name="value_not_set">sin definir</string>
+    <string name="action_ok">Aceptar</string>
+    <string name="action_clear">Quitar</string>
+    <string name="action_move_to">Mover a otro día</string>
+    <string name="move_to_title">Mover a</string>
+    <string name="move_to_ideas">Ideas (sin día)</string>
+    <string name="action_edit_place">Editar lugar</string>
 </resources>

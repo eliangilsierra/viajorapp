@@ -57,6 +57,19 @@ class PlacesPresenterTest {
     }
 
     @Test
+    fun aPlaceCanBeEdited() = runTest {
+        val p = presenter()
+        p.addPlace(PlaceDraft("Belem"))
+        val id = p.state.value.places.single().id
+        p.editPlace(id, PlaceDraft("Belem tower", latitude = 38.69, longitude = -9.21))
+        assertEquals(listOf("Belem tower"), p.state.value.places.map { it.name })
+        assertEquals(38.69, p.state.value.places.single().latitude)
+        p.editPlace(id, PlaceDraft(" "))
+        assertEquals(listOf(PlaceError.EMPTY_NAME), p.state.value.placeErrors)
+        assertEquals("Belem tower", p.state.value.places.single().name)
+    }
+
+    @Test
     fun kilometreTextRoundsToOneDecimalWithoutLocaleFormatting() {
         assertEquals("1.0", kmText(1_000))
         assertEquals("1.2", kmText(1_234))
