@@ -5,7 +5,10 @@ import app.viajor.data.ActivityError
 import app.viajor.data.ActivityRecord
 import app.viajor.data.DayRecord
 import app.viajor.data.ItineraryRepository
+import app.viajor.data.PlaceDraft
+import app.viajor.data.PlaceError
 import app.viajor.data.PlaceRecord
+import app.viajor.data.SavePlaceResult
 import app.viajor.data.SaveActivityResult
 import app.viajor.data.TripRecord
 import app.viajor.data.TripRepository
@@ -34,6 +37,7 @@ data class ItineraryState(
     val places: List<PlaceRecord> = emptyList(),
     /** Problems from the last add or edit, for the form to show; cleared by [ItineraryPresenter.clearErrors]. */
     val errors: List<ActivityError> = emptyList(),
+    val placeErrors: List<PlaceError> = emptyList(),
     /** Set right after a delete so the screen can offer Undo. */
     val undoableDelete: ActivityRecord? = null,
 )
@@ -117,7 +121,17 @@ class ItineraryPresenter(
     /** Appends a day to an undated trip; dated trips change length through the trip editor. */
     fun addDay() = launchGuarded { trips.addDay(tripId) }
 
-    fun clearErrors() = _state.update { it.copy(errors = emptyList()) }
+    fun addPlace(draft: PlaceDraft) = launchGuarded {
+        when (val r = itinerary.addPlace(tripId, draft)) {
+            is SavePlaceResult.Invalid -> _state.update { it.copy(placeErrors = r.errors) }
+            is SavePlaceResult.Saved -> _state.update { it.copy(placeErrors = emptyList()) }
+            SavePlaceResult.NotFound -> _state.update { it.copy(status = ListStatus.EMPTY) }
+        }
+    }
+
+    fun deletePlace(id: String) = launchGuarded { itinerary.deletePlace(id) }
+
+    fun clearErrors() = _state.update { it.copy(errors = emptyList(), placeErrors = emptyList()) }
 
     private fun launchGuarded(block: suspend () -> Unit): Job {
         return scope.launch {
