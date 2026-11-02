@@ -10,7 +10,7 @@ import app.viajor.designsystem.ViajorTheme
  */
 @Composable
 fun ViajorApp(deps: AppDependencies, files: FileAccess, navigator: Navigator) {
-    ViajorTheme {
+    ViajorTheme(typography = viajorTypography()) {
         val screen = navigator.current
         // The key gives every screen its own presenter and drops it when the user leaves.
         key(screen) {

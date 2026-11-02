@@ -71,7 +71,6 @@ import viajorapp.ui.generated.resources.ic_chevron
 import viajorapp.ui.generated.resources.ic_more
 import viajorapp.ui.generated.resources.load_error
 import viajorapp.ui.generated.resources.tagline
-import viajorapp.ui.generated.resources.trip_dates
 import viajorapp.ui.generated.resources.trip_deleted
 import viajorapp.ui.generated.resources.trip_stats
 import viajorapp.ui.generated.resources.trip_undated
@@ -177,7 +176,6 @@ private fun HeroCard(hero: HeroTrip, onOpen: () -> Unit) {
             Text(trip.title, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onPrimary)
             Text(dateRange(trip), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onPrimary)
             Text(stats(hero.summary), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f))
-            StoredOnDeviceChip(Modifier.padding(top = 8.dp))
         }
     }
 }
@@ -222,7 +220,7 @@ private fun TripCard(number: Int, summary: TripSummary, onOpen: () -> Unit, onEd
 private fun dateRange(trip: TripRecord): String {
     val start = trip.startDate
     val end = trip.endDate
-    return if (start != null && end != null) stringResource(Res.string.trip_dates, start.toString(), end.toString()) else stringResource(Res.string.trip_undated)
+    return if (start != null && end != null) friendlyDateRange(start, end) else stringResource(Res.string.trip_undated)
 }
 
 @Composable
