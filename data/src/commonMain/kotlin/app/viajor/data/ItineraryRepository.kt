@@ -24,6 +24,9 @@ interface ItineraryRepository {
 
     fun observePlaces(tripId: String): Flow<List<PlaceRecord>>
 
+    /** Places of every active trip, for the map tab. */
+    fun observeAllPlaces(): Flow<List<PlaceRecord>>
+
     /** Adds at the end of the day, or of the unscheduled list when [dayId] is null. */
     suspend fun addActivity(tripId: String, dayId: String?, draft: ActivityDraft, provenance: Provenance = Provenance.USER): SaveActivityResult
 
@@ -64,6 +67,9 @@ class SqlItineraryRepository(
 
     override fun observePlaces(tripId: String): Flow<List<PlaceRecord>> =
         db.placeQueries.selectPlacesForTrip(tripId).asFlow().mapToList(io).map { rows -> rows.map { it.toRecord() } }
+
+    override fun observeAllPlaces(): Flow<List<PlaceRecord>> =
+        db.placeQueries.selectAllPlacesForMap().asFlow().mapToList(io).map { rows -> rows.map { it.toRecord() } }
 
     override suspend fun addActivity(tripId: String, dayId: String?, draft: ActivityDraft, provenance: Provenance): SaveActivityResult {
         val errors = validate(draft).toMutableList()

@@ -247,4 +247,17 @@ class RepositoriesTest {
         val second = db.tripQueries.selectById(id).executeAsOne().updated_at_hlc
         assertTrue(second > first, "$second should sort after $first")
     }
+
+    @Test
+    fun theMapTabSeesPlacesOfActiveTripsOnly() = runTest {
+        val a = createTrip()
+        val b = createTrip(input("Porto"))
+        itinerary.addPlace(a, PlaceDraft("Alfama", latitude = 38.7, longitude = -9.1))
+        itinerary.addPlace(b, PlaceDraft("Ribeira", latitude = 41.1, longitude = -8.6))
+        assertEquals(listOf("Alfama", "Ribeira"), itinerary.observeAllPlaces().first().map { it.name })
+        trips.setArchived(b, true)
+        assertEquals(listOf("Alfama"), itinerary.observeAllPlaces().first().map { it.name })
+        trips.deleteTrip(a)
+        assertEquals(emptyList(), itinerary.observeAllPlaces().first())
+    }
 }
