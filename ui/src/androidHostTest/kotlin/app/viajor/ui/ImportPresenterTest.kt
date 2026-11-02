@@ -159,4 +159,28 @@ class ImportPresenterTest {
         assertEquals(ImportError.BAD_FILE, p.state.value.error)
         assertEquals(emptyList(), itinerary.observeUnscheduled(id).first())
     }
+
+    @Test
+    fun aCsvExportedByThePlanExporterImportsBackIntoAnotherTrip() = runTest {
+        val plan = app.viajor.domain.ExportPlan(
+            "Lisbon", null,
+            listOf(
+                app.viajor.domain.ExportDay(
+                    1, "2027-03-01",
+                    listOf(app.viajor.domain.ExportActivity("=Danger", "n,1", "10:00", "11:30", "Alfama"), app.viajor.domain.ExportActivity("Lunch")),
+                ),
+            ),
+            listOf(app.viajor.domain.ExportActivity("Fado idea")),
+        )
+        val id = datedTrip()
+        val p = ImportPresenter(itinerary, eager(), id, "Europe/Lisbon")
+        p.reviewCsv(app.viajor.domain.PlanExport.csv(plan))
+        p.confirm()
+        assertEquals(3, p.state.value.added)
+        val day1 = itinerary.observeActivities(itinerary.observeDays(id).first()[0].id).first()
+        assertEquals(listOf("=Danger", "Lunch"), day1.map { it.title })
+        assertEquals("n,1", day1.first().notes)
+        assertEquals(LocalDateTime.parse("2027-03-01T10:00"), day1.first().start)
+        assertEquals(listOf("Fado idea"), itinerary.observeUnscheduled(id).first().map { it.title })
+    }
 }

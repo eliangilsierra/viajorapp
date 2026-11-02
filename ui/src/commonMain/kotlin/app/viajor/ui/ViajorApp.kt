@@ -17,7 +17,7 @@ fun ViajorApp(deps: AppDependencies, files: FileAccess, navigator: Navigator) {
             when (screen) {
                 Screen.TripList -> TripListScreen(deps, navigator)
                 is Screen.TripEditor -> TripEditorScreen(deps, navigator, screen.tripId)
-                is Screen.Itinerary -> ItineraryScreen(deps, navigator, screen.tripId)
+                is Screen.Itinerary -> ItineraryScreen(deps, files, navigator, screen.tripId)
                 Screen.Settings -> SettingsScreen(deps, files, navigator)
                 Screen.Search -> SearchScreen(deps, navigator)
                 is Screen.Import -> ImportScreen(deps, files, navigator, screen.tripId)

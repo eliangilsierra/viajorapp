@@ -40,6 +40,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import app.viajor.data.ActivityDraft
 import app.viajor.data.ActivityRecord
+import app.viajor.domain.PlanExport
 import app.viajor.ui.presenter.DayWithActivities
 import app.viajor.ui.presenter.ItineraryPresenter
 import app.viajor.ui.presenter.ListStatus
@@ -55,7 +56,12 @@ import viajorapp.ui.generated.resources.action_back
 import viajorapp.ui.generated.resources.action_cancel
 import viajorapp.ui.generated.resources.action_delete
 import viajorapp.ui.generated.resources.action_edit
+import viajorapp.ui.generated.resources.action_export
 import viajorapp.ui.generated.resources.action_import
+import viajorapp.ui.generated.resources.export_csv
+import viajorapp.ui.generated.resources.export_markdown
+import viajorapp.ui.generated.resources.msg_failed
+import viajorapp.ui.generated.resources.msg_plan_saved
 import viajorapp.ui.generated.resources.action_more
 import viajorapp.ui.generated.resources.action_move_down
 import viajorapp.ui.generated.resources.action_move_up
@@ -86,7 +92,7 @@ private fun LocalDateTime.hhmm() = hour.toString().padStart(2, '0') + ":" + minu
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String) {
+fun ItineraryScreen(deps: AppDependencies, files: FileAccess, navigator: Navigator, tripId: String) {
     val scope = rememberCoroutineScope()
     val presenter = remember { ItineraryPresenter(deps.trips, deps.itinerary, scope, tripId) }
     val state by presenter.state.collectAsState()
@@ -97,6 +103,9 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
     var movingActivity by remember { mutableStateOf<ActivityRecord?>(null) }
     val deletedMessage = stringResource(Res.string.activity_deleted)
     val undoLabel = stringResource(Res.string.action_undo)
+    val savedMessage = stringResource(Res.string.msg_plan_saved)
+    val failedMessage = stringResource(Res.string.msg_failed)
+    var exportMenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.undoableDelete) {
         if (state.undoableDelete == null) return@LaunchedEffect
@@ -109,7 +118,35 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
             TopAppBar(
                 title = { Text(state.trip?.title.orEmpty()) },
                 navigationIcon = { TextButton(onClick = { navigator.back() }) { Text(stringResource(Res.string.action_back)) } },
-                actions = { TextButton(onClick = { navigator.open(Screen.Import(tripId)) }) { Text(stringResource(Res.string.action_import)) } },
+                actions = {
+                    TextButton(onClick = { navigator.open(Screen.Import(tripId)) }) { Text(stringResource(Res.string.action_import)) }
+                    Box {
+                        TextButton(onClick = { exportMenu = true }) { Text(stringResource(Res.string.action_export)) }
+                        DropdownMenu(expanded = exportMenu, onDismissRequest = { exportMenu = false }) {
+                            for (csv in listOf(false, true)) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(if (csv) Res.string.export_csv else Res.string.export_markdown)) },
+                                    onClick = {
+                                        exportMenu = false
+                                        val plan = state.toExportPlan()
+                                        if (plan != null) {
+                                            scope.launch {
+                                                val saved = try {
+                                                    if (csv) files.saveText(plan.title.fileName() + ".csv", "text/csv", PlanExport.csv(plan))
+                                                    else files.saveText(plan.title.fileName() + ".md", "text/markdown", PlanExport.markdown(plan))
+                                                } catch (e: Exception) {
+                                                    snackbar.showSnackbar(failedMessage)
+                                                    false
+                                                }
+                                                if (saved) snackbar.showSnackbar(savedMessage)
+                                            }
+                                        }
+                                    },
+                                )
+                            }
+                        }
+                    }
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbar) },
@@ -368,3 +405,27 @@ private fun MoveDialog(days: List<app.viajor.data.DayRecord>, onDismiss: () -> U
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(Res.string.action_cancel)) } },
     )
 }
+
+/** Turns what is on screen into the plain structure the exporters take; null while the trip is not loaded. */
+private fun app.viajor.ui.presenter.ItineraryState.toExportPlan(): app.viajor.domain.ExportPlan? {
+    val trip = trip ?: return null
+    val names = places.associate { it.id to it.name }
+    fun map(a: ActivityRecord) = app.viajor.domain.ExportActivity(
+        title = a.title,
+        notes = a.notes,
+        start = a.start?.hhmm(),
+        end = a.end?.hhmm(),
+        place = a.placeId?.let(names::get),
+        completed = a.completed,
+    )
+    return app.viajor.domain.ExportPlan(
+        title = trip.title,
+        description = trip.description,
+        days = days.map { d -> app.viajor.domain.ExportDay(d.day.index, d.day.date?.toString(), d.activities.map(::map)) },
+        ideas = unscheduled.map(::map),
+    )
+}
+
+/** A safe file name stem: letters and digits kept, everything else becomes a dash. */
+private fun String.fileName(): String =
+    map { if (it.isLetterOrDigit()) it else '-' }.joinToString("").trim('-').ifEmpty { "trip" }.take(60)
