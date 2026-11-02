@@ -43,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import app.viajor.data.TripRecord
 import app.viajor.data.TripSummary
@@ -63,6 +64,7 @@ import viajorapp.ui.generated.resources.action_edit
 import viajorapp.ui.generated.resources.action_more
 import viajorapp.ui.generated.resources.action_undo
 import viajorapp.ui.generated.resources.brand_symbol_dark
+import viajorapp.ui.generated.resources.brand_symbol_light
 import viajorapp.ui.generated.resources.empty_trips_body
 import viajorapp.ui.generated.resources.empty_trips_title
 import viajorapp.ui.generated.resources.hero_next
@@ -162,7 +164,8 @@ private fun HeroCard(hero: HeroTrip, onOpen: () -> Unit) {
         modifier = Modifier.fillMaxWidth().clip(shape).background(MaterialTheme.colorScheme.primary).clickable(onClick = onOpen),
     ) {
         Image(
-            painter = painterResource(Res.drawable.brand_symbol_dark),
+            // The card is the primary color: light in the dark theme, so the watermark needs the dark-stroked symbol there.
+            painter = painterResource(if (MaterialTheme.colorScheme.primary.luminance() > 0.5f) Res.drawable.brand_symbol_light else Res.drawable.brand_symbol_dark),
             contentDescription = null,
             alpha = 0.16f,
             modifier = Modifier.align(Alignment.TopEnd).offset(x = 48.dp, y = (-24).dp).size(200.dp),
