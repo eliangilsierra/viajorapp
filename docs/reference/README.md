@@ -6,4 +6,5 @@ OpenAPI) is linked from here.
 
 | Reference | Covers |
 | --- | --- |
-| None yet | — |
+| [Data inventory](DATA_INVENTORY.md) | Every data item the app handles, where it lives and how it is deleted |
+| [Store readiness checklist](store-readiness-checklist.md) | What is verified and what is open before any store submission |
