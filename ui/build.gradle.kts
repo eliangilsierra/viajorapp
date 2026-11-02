@@ -18,6 +18,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":domain"))
+            api(project(":data"))
             api(project(":designsystem"))
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -27,6 +28,10 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
+        }
+        getByName("androidHostTest").dependencies {
+            implementation(libs.sqldelight.sqlite.driver)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }
