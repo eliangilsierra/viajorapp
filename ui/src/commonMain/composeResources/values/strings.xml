@@ -130,4 +130,8 @@
     <string name="export_markdown">As Markdown</string>
     <string name="export_csv">As CSV</string>
     <string name="msg_plan_saved">File saved</string>
+    <string name="map_title">Map</string>
+    <string name="action_show_map">Show on map</string>
+    <string name="map_note">The base map is loaded from %1$s over the internet. Without a connection it stays blank; your places below are still listed.</string>
+    <string name="map_no_coordinates">None of your places has coordinates yet. Add a latitude and longitude to a place to see it on the map.</string>
 </resources>

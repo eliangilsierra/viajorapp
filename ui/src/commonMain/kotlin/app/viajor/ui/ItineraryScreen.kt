@@ -187,7 +187,7 @@ fun ItineraryScreen(deps: AppDependencies, files: FileAccess, navigator: Navigat
                     }
                     item(key = "add-idea") { TextButton(onClick = { editing = EditTarget(null, null, null) }) { Text(stringResource(Res.string.action_add_idea)) } }
                     item(key = "places") {
-                        PlacesSection(state.places, onAdd = { addingPlace = true }, onEdit = { editingPlace = it }, onDelete = { presenter.deletePlace(it.id) })
+                        PlacesSection(state.places, onAdd = { addingPlace = true }, onMap = { navigator.open(Screen.Map(tripId)) }, onEdit = { editingPlace = it }, onDelete = { presenter.deletePlace(it.id) })
                     }
                 }
             }

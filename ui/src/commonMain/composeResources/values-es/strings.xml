@@ -130,4 +130,8 @@
     <string name="export_markdown">Como Markdown</string>
     <string name="export_csv">Como CSV</string>
     <string name="msg_plan_saved">Archivo guardado</string>
+    <string name="map_title">Mapa</string>
+    <string name="action_show_map">Ver en el mapa</string>
+    <string name="map_note">El mapa base se carga desde %1$s por internet. Sin conexión queda en blanco; tus lugares siguen listados abajo.</string>
+    <string name="map_no_coordinates">Ninguno de tus lugares tiene coordenadas todavía. Añade latitud y longitud a un lugar para verlo en el mapa.</string>
 </resources>
