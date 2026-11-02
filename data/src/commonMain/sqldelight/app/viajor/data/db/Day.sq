@@ -21,3 +21,16 @@ VALUES (?, ?, ?, ?, ?, ?, ?);
 
 selectDaysForTrip:
 SELECT * FROM trip_day WHERE trip_id = ? AND deleted_at IS NULL ORDER BY day_index;
+
+-- Includes soft-deleted days: the (trip_id, day_index) pair stays unique, so a dropped day is revived, not re-inserted.
+selectAllDaysForTrip:
+SELECT * FROM trip_day WHERE trip_id = ? ORDER BY day_index;
+
+selectDayById:
+SELECT * FROM trip_day WHERE id = ?;
+
+setDay:
+UPDATE trip_day SET date = ?, deleted_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+countActivitiesForDay:
+SELECT COUNT(*) FROM activity WHERE day_id = ? AND deleted_at IS NULL;

@@ -27,3 +27,9 @@ SELECT * FROM place WHERE trip_id = ? AND deleted_at IS NULL ORDER BY name;
 
 softDeletePlace:
 UPDATE place SET deleted_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+selectPlaceById:
+SELECT * FROM place WHERE id = ?;
+
+updatePlace:
+UPDATE place SET name = ?, address = ?, lat = ?, lon = ?, notes = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;

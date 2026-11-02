@@ -28,3 +28,12 @@ UPDATE trip SET deleted_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
 
 restore:
 UPDATE trip SET deleted_at = NULL, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+selectById:
+SELECT * FROM trip WHERE id = ?;
+
+updateTripDetails:
+UPDATE trip SET title = ?, description = ?, start_date = ?, end_date = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
+
+setArchived:
+UPDATE trip SET archived_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
