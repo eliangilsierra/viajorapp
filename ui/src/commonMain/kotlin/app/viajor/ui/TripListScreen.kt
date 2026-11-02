@@ -41,6 +41,7 @@ import viajorapp.ui.generated.resources.action_create_trip
 import viajorapp.ui.generated.resources.action_delete
 import viajorapp.ui.generated.resources.action_edit
 import viajorapp.ui.generated.resources.action_open
+import viajorapp.ui.generated.resources.action_search
 import viajorapp.ui.generated.resources.action_settings
 import viajorapp.ui.generated.resources.action_undo
 import viajorapp.ui.generated.resources.empty_trips_body
@@ -72,7 +73,10 @@ fun TripListScreen(deps: AppDependencies, navigator: Navigator) {
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(Res.string.trips_title)) },
-                actions = { TextButton(onClick = { navigator.open(Screen.Settings) }) { Text(stringResource(Res.string.action_settings)) } },
+                actions = {
+                    TextButton(onClick = { navigator.open(Screen.Search) }) { Text(stringResource(Res.string.action_search)) }
+                    TextButton(onClick = { navigator.open(Screen.Settings) }) { Text(stringResource(Res.string.action_settings)) }
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbar) },

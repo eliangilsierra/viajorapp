@@ -6,6 +6,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.setValue
 import app.viajor.data.BackupService
 import app.viajor.data.ItineraryRepository
+import app.viajor.data.SearchRepository
 import app.viajor.data.TripRepository
 
 /** What the shared UI needs from the platform; the Android app (and later iOS) builds this once. */
@@ -13,6 +14,7 @@ class AppDependencies(
     val trips: TripRepository,
     val itinerary: ItineraryRepository,
     val backup: BackupService,
+    val search: SearchRepository,
     /** IANA id of the device's time zone, used for activity times (ADR-0002). */
     val timeZoneId: String,
 )
@@ -26,17 +28,21 @@ sealed interface Screen {
 
     data object Settings : Screen
 
+    data object Search : Screen
+
     /** A short text form that survives rotation and process death; see [Navigator.Saver]. */
     fun encode(): String = when (this) {
         TripList -> "list"
         is TripEditor -> "edit:" + (tripId ?: "")
         is Itinerary -> "trip:$tripId"
         Settings -> "settings"
+        Search -> "search"
     }
 
     companion object {
         fun decode(text: String): Screen = when {
             text == "settings" -> Settings
+            text == "search" -> Search
             text.startsWith("edit:") -> TripEditor(text.removePrefix("edit:").ifEmpty { null })
             text.startsWith("trip:") -> Itinerary(text.removePrefix("trip:"))
             else -> TripList
