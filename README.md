@@ -1,52 +1,59 @@
 # Viajorapp
 
-**Plan smarter. Travel further.** Open-source, offline-first travel planning for Android and iOS. Your trips stay on your device; maps, AI and sync are optional.
+**Plan smarter. Travel further.** Open-source, offline-first travel planning for Android and iOS. Your trips stay on your device; maps, AI and sync are optional and off by default.
 
-> Status: early foundation (0.1). The Android shell builds; trip features are not implemented yet. See [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md) for what works and what does not.
+> **Status: early foundation (0.1).** The Android app builds and opens to a welcome screen. Trip, itinerary, map, import, AI and sync features are **not available yet**: some of their tested building blocks exist in the code but no screen uses them. iOS has never been compiled or run. See [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md) for exactly what works and what does not.
 
-<!-- template:start -->
-## Starting a project from this template
+## What it is meant to be
 
-This repository is a GitHub template for projects worked on by the
-[agent team](https://github.com/eliangilsierra/openhands-agent-team). A new repository created from it already has the
-team contract, the Issue and Pull Request forms, the Pull Request checks, CI, the secret scan, the
-labels data and an MIT licence. What GitHub does not copy from a template (settings, labels, branch
-protection, security features, the `develop` branch) is applied by one script.
+- Trips, days and an itinerary stored on the device, usable without a connection or an account.
+- No backend, no mandatory sign-in, no subscription, no analytics or telemetry.
+- Optional, user-controlled extras: map tiles from a provider you can see, a bring-your-own-key AI assistant that only proposes changes you review, and optional encrypted sync through a folder you choose.
+- Clear labels: a straight-line travel estimate is never shown as a routed path.
 
-1. On GitHub, choose **Use this template → Create a new repository** (public, so push protection is
-   free), or run `gh repo create <owner>/<name> --public --template eliangilsierra/agent-team-project-template --clone`.
-2. In the new clone, preview and then apply the setup (needs `gh` authenticated as an administrator
-   of the repository, `git` and `bash`):
-
-   ```bash
-   bash scripts/bootstrap.sh --dry-run
-   bash scripts/bootstrap.sh --stack auto
-   ```
-
-   It fills the project name, the licence holder and year and `CODEOWNERS`, installs the CI for the
-   stack, commits that to `main`, creates `develop` and makes it the default branch, and configures
-   labels, merge settings, rulesets for `main` and `develop`, required checks, secret scanning, push
-   protection, Dependabot alerts and read-only Actions permissions. It is safe to run again.
-3. Fill the "Project facts" of [AGENTS.md](AGENTS.md) (the team's `detect_stack.py --format md` does it
-   once there is code) and start the team with `Build: <idea>`.
-
-This section is removed by `bootstrap.sh`.
-<!-- template:end -->
+The product plan is in [docs/product/PRD.md](docs/product/PRD.md); the decisions behind the architecture are in [docs/decisions](docs/decisions/README.md).
 
 ## Getting started
 
-Prerequisites, installation and the first run. The Technical Writer keeps this section current from
-the project facts in [AGENTS.md](AGENTS.md) and the guide in [docs/tutorials](docs/tutorials/README.md).
+Prerequisites: JDK 17 and the Android SDK (platform 37; the Android Gradle Plugin downloads it if the licences are accepted). On Windows, write the SDK path in `local.properties` with forward slashes.
 
-## Usage
+```properties
+sdk.dir=C:/Users/you/AppData/Local/Android/Sdk
+```
 
-What a user or client does with the project: the main commands, endpoints or screens, with links to
-[docs/how-to](docs/how-to/README.md) and [docs/reference](docs/reference/README.md).
+Build and test (these commands were run on Windows 11 with JDK 17):
+
+```bash
+./gradlew :domain:allTests :data:allTests :designsystem:allTests
+./gradlew :data:verifyCommonMainViajorDatabaseMigration
+./gradlew :androidApp:lintDebug
+./gradlew :androidApp:assembleDebug
+```
+
+The debug APK is written to `androidApp/build/outputs/apk/debug/`. More detail is in [docs/how-to/build-and-test.md](docs/how-to/build-and-test.md). The app has not been run on an emulator or device in the maintainers' environment yet. iOS targets are declared but need macOS and Xcode, which have not been available.
+
+## Project layout
+
+| Module | Contents |
+| --- | --- |
+| `domain/` | Pure Kotlin rules: ordering keys, time zones, trip days, CSV, sync merge, AI proposal validation, secret redaction, offline estimates, money |
+| `data/` | SQLDelight schema, migrations and queries |
+| `designsystem/` | Waypoint colour tokens and theme |
+| `ui/` | Screens and the map surface |
+| `androidApp/` | The Android application shell |
+| `design/brand/` | Brand sources (SVG) and the concept gallery |
+| `docs/` | Product, architecture decisions, research and guides |
+
+## Contributing, security and privacy
+
+- [CONTRIBUTING.md](CONTRIBUTING.md): how to propose and submit changes.
+- [SECURITY.md](SECURITY.md): how to report a vulnerability.
+- [PRIVACY.md](PRIVACY.md): what the app does with your data today and what is planned.
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
 ## Documentation
 
-Start at [docs/README.md](docs/README.md): tutorials, how-to guides, reference, explanation,
-architecture, decisions, UX design and research.
+Start at [docs/README.md](docs/README.md): tutorials, how-to guides, reference, explanation, architecture, decisions, UX design and research.
 
 ## Branches
 
@@ -57,13 +64,6 @@ architecture, decisions, UX design and research.
 
 Both branches are protected: no direct pushes, no force pushes, no deletion, and the checks
 `pr-conventions`, `ci` and `secret-scan` must pass.
-
-## Development
-
-- Read [AGENTS.md](AGENTS.md): project facts and the team contract.
-- One Issue, one branch, one Pull Request into `develop`, titled with Conventional Commits.
-- Architecture documents live in [docs/architecture](docs/architecture/README.md), decisions in
-  [docs/decisions](docs/decisions/README.md) and research in [docs/research](docs/research/README.md).
 
 ## Licence
 
