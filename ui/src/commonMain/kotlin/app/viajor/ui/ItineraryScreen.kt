@@ -55,6 +55,7 @@ import viajorapp.ui.generated.resources.action_back
 import viajorapp.ui.generated.resources.action_cancel
 import viajorapp.ui.generated.resources.action_delete
 import viajorapp.ui.generated.resources.action_edit
+import viajorapp.ui.generated.resources.action_import
 import viajorapp.ui.generated.resources.action_more
 import viajorapp.ui.generated.resources.action_move_down
 import viajorapp.ui.generated.resources.action_move_up
@@ -108,6 +109,7 @@ fun ItineraryScreen(deps: AppDependencies, navigator: Navigator, tripId: String)
             TopAppBar(
                 title = { Text(state.trip?.title.orEmpty()) },
                 navigationIcon = { TextButton(onClick = { navigator.back() }) { Text(stringResource(Res.string.action_back)) } },
+                actions = { TextButton(onClick = { navigator.open(Screen.Import(tripId)) }) { Text(stringResource(Res.string.action_import)) } },
             )
         },
         snackbarHost = { SnackbarHost(snackbar) },

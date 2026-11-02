@@ -20,6 +20,7 @@ fun ViajorApp(deps: AppDependencies, files: FileAccess, navigator: Navigator) {
                 is Screen.Itinerary -> ItineraryScreen(deps, navigator, screen.tripId)
                 Screen.Settings -> SettingsScreen(deps, files, navigator)
                 Screen.Search -> SearchScreen(deps, navigator)
+                is Screen.Import -> ImportScreen(deps, files, navigator, screen.tripId)
             }
         }
     }
