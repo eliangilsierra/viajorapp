@@ -37,6 +37,7 @@ ICONS = {
         disc(9, 7, 2.2), disc(15, 12, 2.2), disc(9, 17, 2.2),
     ],
     "ic_chevron": [stroke("M9,6L15,12L9,18")],
+    "ic_back": [stroke("M15,6L9,12L15,18")],
     "ic_more": [disc(12, 5, 1.7), disc(12, 12, 1.7), disc(12, 19, 1.7)],
     "ic_add": [stroke("M12,5L12,19"), stroke("M5,12L19,12")],
 }

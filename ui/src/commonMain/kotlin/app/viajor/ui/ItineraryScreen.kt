@@ -26,6 +26,21 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import org.jetbrains.compose.resources.painterResource
+import viajorapp.ui.generated.resources.ic_add
+import viajorapp.ui.generated.resources.ic_back
+import viajorapp.ui.generated.resources.ic_more
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -104,6 +119,7 @@ fun ItineraryScreen(deps: AppDependencies, files: FileAccess, navigator: Navigat
     val deletedMessage = stringResource(Res.string.activity_deleted)
     val undoLabel = stringResource(Res.string.action_undo)
     val savedMessage = stringResource(Res.string.msg_plan_saved)
+    val backLabel = stringResource(Res.string.action_back)
     val failedMessage = stringResource(Res.string.msg_failed)
     var exportMenu by remember { mutableStateOf(false) }
 
@@ -117,7 +133,9 @@ fun ItineraryScreen(deps: AppDependencies, files: FileAccess, navigator: Navigat
         topBar = {
             TopAppBar(
                 title = { Text(state.trip?.title.orEmpty()) },
-                navigationIcon = { TextButton(onClick = { navigator.back() }) { Text(stringResource(Res.string.action_back)) } },
+                navigationIcon = {
+                    IconButton(onClick = { navigator.back() }) { Icon(painterResource(Res.drawable.ic_back), contentDescription = backLabel) }
+                },
                 actions = {
                     TextButton(onClick = { navigator.open(Screen.Import(tripId)) }) { Text(stringResource(Res.string.action_import)) }
                     Box {
@@ -172,22 +190,27 @@ fun ItineraryScreen(deps: AppDependencies, files: FileAccess, navigator: Navigat
                     if (state.trip?.startDate == null) {
                         item(key = "add-day") { TextButton(onClick = { presenter.addDay() }) { Text(stringResource(Res.string.action_add_day)) } }
                     }
-                    item(key = "ideas-heading") { Text(stringResource(Res.string.ideas_heading), style = MaterialTheme.typography.titleMedium) }
-                    items(state.unscheduled, key = { it.id }) { a ->
-                        val index = state.unscheduled.indexOf(a)
-                        ActivityRow(
-                            a, canMoveUp = index > 0, canMoveDown = index < state.unscheduled.lastIndex,
-                            onToggle = { presenter.setCompleted(a.id, it) },
-                            onMoveUp = { presenter.move(a.id, null, index - 1) },
-                            onMoveDown = { presenter.move(a.id, null, index + 1) },
-                            onEdit = { editing = EditTarget(null, null, a) },
-                            onMoveTo = { movingActivity = a },
-                            onDelete = { presenter.delete(a) },
-                        )
+                    item(key = "ideas") {
+                        SectionCard {
+                            Text(stringResource(Res.string.ideas_heading), style = MaterialTheme.typography.titleMedium)
+                            state.unscheduled.forEachIndexed { index, a ->
+                                ActivityRow(
+                                    a, canMoveUp = index > 0, canMoveDown = index < state.unscheduled.lastIndex,
+                                    onToggle = { presenter.setCompleted(a.id, it) },
+                                    onMoveUp = { presenter.move(a.id, null, index - 1) },
+                                    onMoveDown = { presenter.move(a.id, null, index + 1) },
+                                    onEdit = { editing = EditTarget(null, null, a) },
+                                    onMoveTo = { movingActivity = a },
+                                    onDelete = { presenter.delete(a) },
+                                )
+                            }
+                            AddButton(stringResource(Res.string.action_add_idea)) { editing = EditTarget(null, null, null) }
+                        }
                     }
-                    item(key = "add-idea") { TextButton(onClick = { editing = EditTarget(null, null, null) }) { Text(stringResource(Res.string.action_add_idea)) } }
                     item(key = "places") {
-                        PlacesSection(state.places, onAdd = { addingPlace = true }, onMap = { navigator.open(Screen.Map(tripId)) }, onEdit = { editingPlace = it }, onDelete = { presenter.deletePlace(it.id) })
+                        SectionCard {
+                            PlacesSection(state.places, onAdd = { addingPlace = true }, onMap = { navigator.open(Screen.Map(tripId)) }, onEdit = { editingPlace = it }, onDelete = { presenter.deletePlace(it.id) })
+                        }
                     }
                 }
             }
@@ -254,36 +277,62 @@ private fun androidx.compose.foundation.lazy.LazyListScope.dayItems(
     onDelete: (ActivityRecord) -> Unit,
     onAdd: () -> Unit,
 ) {
-    item(key = "day-${day.day.id}") { DayHeading(day) }
-    if (day.activities.isEmpty()) {
-        item(key = "empty-${day.day.id}") { Text(stringResource(Res.string.no_activities), style = MaterialTheme.typography.bodyMedium) }
-    }
-    items(day.activities, key = { it.id }) { a ->
-        val index = day.activities.indexOf(a)
-        Column {
-            ActivityRow(
-                a, canMoveUp = index > 0, canMoveDown = index < day.activities.lastIndex,
-                onToggle = { onToggle(a, it) },
-                onMoveUp = { onMove(a, index - 1) },
-                onMoveDown = { onMove(a, index + 1) },
-                onEdit = { onEdit(a) },
-                onMoveTo = { onMoveTo(a) },
-                onDelete = { onDelete(a) },
-            )
-            day.activities.getOrNull(index + 1)?.let { next -> EstimateLine(a, next, placesById) }
+    item(key = "day-${day.day.id}") {
+        SectionCard {
+            DayHeader(day)
+            if (day.activities.isEmpty()) {
+                Text(stringResource(Res.string.no_activities), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            day.activities.forEachIndexed { index, a ->
+                ActivityRow(
+                    a, canMoveUp = index > 0, canMoveDown = index < day.activities.lastIndex,
+                    onToggle = { onToggle(a, it) },
+                    onMoveUp = { onMove(a, index - 1) },
+                    onMoveDown = { onMove(a, index + 1) },
+                    onEdit = { onEdit(a) },
+                    onMoveTo = { onMoveTo(a) },
+                    onDelete = { onDelete(a) },
+                )
+                day.activities.getOrNull(index + 1)?.let { next -> EstimateLine(a, next, placesById) }
+            }
+            AddButton(stringResource(Res.string.action_add_activity), onAdd)
         }
     }
-    item(key = "add-${day.day.id}") { TextButton(onClick = onAdd) { Text(stringResource(Res.string.action_add_activity)) } }
+}
+
+/** An outlined, rounded surface that groups one day, the ideas or the places, as in the concept's cards. */
+@Composable
+private fun SectionCard(content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit) {
+    val shape = RoundedCornerShape(20.dp)
+    Column(
+        modifier = Modifier.fillMaxWidth().clip(shape).background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), shape).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        content = content,
+    )
 }
 
 @Composable
-private fun DayHeading(day: DayWithActivities) {
+private fun DayHeader(day: DayWithActivities) {
     val date = day.day.date
-    Text(
-        if (date != null) stringResource(Res.string.day_heading_dated, day.day.index, date.toString()) else stringResource(Res.string.day_heading, day.day.index),
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(top = 8.dp),
-    )
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Box(Modifier.size(36.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
+            Text(day.day.index.toString(), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimary)
+        }
+        Column {
+            Text(stringResource(Res.string.day_heading, day.day.index), style = MaterialTheme.typography.titleMedium)
+            if (date != null) Text(date.toString(), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun AddButton(text: String, onClick: () -> Unit) {
+    TextButton(onClick = onClick) {
+        Icon(painterResource(Res.drawable.ic_add), contentDescription = null, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(8.dp))
+        Text(text)
+    }
 }
 
 @Composable
@@ -301,22 +350,25 @@ private fun ActivityRow(
     var menu by remember { mutableStateOf(false) }
     val doneLabel = stringResource(Res.string.cd_mark_done, activity.title)
     val moreLabel = stringResource(Res.string.action_more)
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
         Checkbox(checked = activity.completed, onCheckedChange = onToggle, modifier = Modifier.semantics { contentDescription = doneLabel })
-        Column(modifier = Modifier.weight(1f).padding(vertical = 12.dp)) {
+        Column(modifier = Modifier.weight(1f).padding(vertical = 8.dp)) {
             Text(activity.title, style = MaterialTheme.typography.bodyLarge)
             val start = activity.start
             val end = activity.end
             if (start != null) {
                 Text(
                     if (end != null) "${start.hhmm()}–${end.hhmm()}" else start.hhmm(),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
-            activity.notes?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+            activity.notes?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
         Box {
-            TextButton(onClick = { menu = true }, modifier = Modifier.semantics { contentDescription = moreLabel }) { Text("⋮") }
+            IconButton(onClick = { menu = true }) {
+                Icon(painterResource(Res.drawable.ic_more), contentDescription = moreLabel, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
             DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                 DropdownMenuItem(text = { Text(stringResource(Res.string.action_edit)) }, onClick = { menu = false; onEdit() })
                 DropdownMenuItem(text = { Text(stringResource(Res.string.action_move_up)) }, enabled = canMoveUp, onClick = { menu = false; onMoveUp() })
