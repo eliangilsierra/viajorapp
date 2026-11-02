@@ -11,18 +11,18 @@ Priorities: P0/P1/P2 as in the [PRD](product/PRD.md). Risk column lists what cou
 | 1 | Environment reconnaissance | [Findings](research/2026-10-27-environment-and-stack-findings.md) | Done |
 | 2 | Product discovery | `docs/product/*` | Drafted, awaiting owner review |
 | 3 | Brand concepts | `design/brand/**`, `docs/design/BRAND_STRATEGY.md` | Done: Waypoint chosen by the owner (2026-10-27) |
-| 4 | Design system and UX prototype | tokens, components, interactive preview | In progress: Waypoint color tokens and app icon done (issue #3); fonts, components, prototype not started |
+| 4 | Design system and UX prototype | tokens, components, interactive preview | In progress: Waypoint colour tokens, container mapping and Android icon merged; fonts, components and prototype not started |
 | 5 | Architecture decisions | ADR-0001..0006 | Accepted (2026-10-27) |
 | 6 | Project foundation and CI | Gradle project, version spike, CI | Android done and verified locally (F1-F4); CI workflow merged and green on `develop` for domain tests, lint and assemble (F5); data and designsystem tests not in CI; iOS unverified (F6) |
-| 7 | Local data model and persistence | schema v1, repositories, migrations | In progress: schema v2 (`trip_day`, `place`, `activity`) with a verified migration (issue #6); repositories not started |
-| 8 | Trips and itinerary | TRP-*, DAY-*, ACT-*, SRC-01 | In progress: domain rules merged (validation, day planning, time zones, ordering, overlap); repositories and UI not started |
-| 9 | Maps and places | MAP-*, PLC-* | Not started |
-| 10 | Routing and offline maps | RTE-*, OFM-* | In progress: straight-line estimate and offline region estimate merged; no routing provider or download |
-| 11 | Import/export | IMP-*, EXP-*, PRV-01 | In progress: CSV reader and writer merged; JSON, XLSX, text, backup and UI not started |
-| 12 | Optional AI | AI-* | In progress: proposal validation, diff and secret redaction merged; no provider, key store or UI |
+| 7 | Local data model and persistence | schema, repositories, migrations | Done for trips, days, places, activities and search (schema v3, verified migrations, repositories, backup service); sync log tables not started |
+| 8 | Trips and itinerary | TRP-*, DAY-*, ACT-*, SRC-01 | Done for the MVP: trips, days, activities with pickers, completion, move between days, ideas, search; tags, reservations, budget fields and drag reordering not started |
+| 9 | Maps and places | MAP-*, PLC-* | MVP done: places with coordinates and edit, trip map with markers and attribution; place search by name over a geocoder not started |
+| 10 | Routing and offline maps | RTE-*, OFM-* | In progress: straight-line estimates shown in the app; routing contract and offline region estimate merged without UI; no provider, no offline packs |
+| 11 | Import/export | IMP-*, EXP-*, PRV-01 | MVP done: paste and CSV import with review, Markdown and CSV export, JSON backup and restore, delete-all; XLSX not started |
+| 12 | Optional AI | AI-* | In progress: proposal validation, answer parsing, prompt preview and secret redaction merged; no provider, key store or screens |
 | 13 | Optional sync | SYN-* | In progress: clock and field merge merged; no change files, transport or encryption |
 | 14 | Hardening | accessibility, performance, security | Not started |
-| 15 | Docs and release prep | README, store checklists, signing guide | Not started |
+| 15 | Docs and release prep | README, store checklists, signing guide | In progress: README, CONTRIBUTING, SECURITY, PRIVACY, CODE_OF_CONDUCT and the release, signing and store readiness guides merged; nothing executed |
 | 16 | Final audit | release report | Not started |
 
 ## Phase 6 tasks (foundation)
