@@ -51,11 +51,9 @@ fun SearchScreen(deps: AppDependencies, navigator: Navigator) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(Res.string.action_search)) },
-                navigationIcon = { TextButton(onClick = { navigator.back() }) { Text(stringResource(Res.string.action_back)) } },
-            )
+            TopAppBar(title = { Text(stringResource(Res.string.action_search)) })
         },
+        bottomBar = { MainNavigationBar(Screen.Search, navigator) },
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedTextField(

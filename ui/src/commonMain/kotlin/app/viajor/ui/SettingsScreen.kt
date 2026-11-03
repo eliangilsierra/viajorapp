@@ -58,11 +58,9 @@ fun SettingsScreen(deps: AppDependencies, files: FileAccess, navigator: Navigato
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(Res.string.settings_title)) },
-                navigationIcon = { TextButton(onClick = { navigator.back() }) { Text(stringResource(Res.string.action_back)) } },
-            )
+            TopAppBar(title = { Text(stringResource(Res.string.settings_title)) })
         },
+        bottomBar = { MainNavigationBar(Screen.Settings, navigator) },
     ) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp).verticalScroll(rememberScrollState()),

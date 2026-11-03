@@ -34,6 +34,9 @@ sealed interface Screen {
 
     data class Map(val tripId: String) : Screen
 
+    /** The map of every place of every trip; a top-level tab. */
+    data object AllMap : Screen
+
     /** A short text form that survives rotation and process death; see [Navigator.Saver]. */
     fun encode(): String = when (this) {
         TripList -> "list"
@@ -43,12 +46,14 @@ sealed interface Screen {
         Search -> "search"
         is Import -> "import:$tripId"
         is Map -> "map:$tripId"
+        AllMap -> "allmap"
     }
 
     companion object {
         fun decode(text: String): Screen = when {
             text == "settings" -> Settings
             text == "search" -> Search
+            text == "allmap" -> AllMap
             text.startsWith("edit:") -> TripEditor(text.removePrefix("edit:").ifEmpty { null })
             text.startsWith("import:") -> Import(text.removePrefix("import:"))
             text.startsWith("map:") -> Map(text.removePrefix("map:"))
@@ -63,14 +68,20 @@ class Navigator(start: List<Screen> = listOf(Screen.TripList)) {
     private var stack by mutableStateOf(start.ifEmpty { listOf(Screen.TripList) })
 
     val current: Screen get() = stack.last()
-    val canGoBack: Boolean get() = stack.size > 1
+    /** True when Back does something: pops a screen, or returns from another tab to the trip list. */
+    val canGoBack: Boolean get() = stack.size > 1 || current != Screen.TripList
 
     fun open(screen: Screen) {
         stack = stack + screen
     }
 
     fun back() {
-        if (stack.size > 1) stack = stack.dropLast(1)
+        if (stack.size > 1) stack = stack.dropLast(1) else if (current != Screen.TripList) stack = listOf(Screen.TripList)
+    }
+
+    /** Switches to a top-level tab; the tab starts with a fresh stack. */
+    fun switchTab(screen: Screen) {
+        stack = listOf(screen)
     }
 
     /** Replaces the current screen, for example the editor after a trip was created. */

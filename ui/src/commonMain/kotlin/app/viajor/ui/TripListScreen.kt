@@ -71,11 +71,9 @@ fun TripListScreen(deps: AppDependencies, navigator: Navigator) {
 
     Scaffold(
         topBar = {
-            BrandHeader {
-                TextButton(onClick = { navigator.open(Screen.Search) }) { Text(stringResource(Res.string.action_search)) }
-                TextButton(onClick = { navigator.open(Screen.Settings) }) { Text(stringResource(Res.string.action_settings)) }
-            }
+            BrandHeader { StoredOnDeviceChip() }
         },
+        bottomBar = { MainNavigationBar(Screen.TripList, navigator) },
         snackbarHost = { SnackbarHost(snackbar) },
         floatingActionButton = {
             // The empty state already has its own create button.

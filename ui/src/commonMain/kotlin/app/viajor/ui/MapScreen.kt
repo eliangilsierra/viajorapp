@@ -3,9 +3,12 @@ package app.viajor.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.viajor.data.PlaceRecord
 import app.viajor.domain.TileSourcePresets
 import org.jetbrains.compose.resources.stringResource
 import viajorapp.ui.generated.resources.Res
@@ -28,16 +32,13 @@ import viajorapp.ui.generated.resources.map_note
 import viajorapp.ui.generated.resources.map_title
 
 /**
- * The places of a trip over the base map. Places without coordinates are only listed. The tile provider and its
+ * The places of one trip over the base map. Places without coordinates are only listed. The tile provider and its
  * attribution are always shown, and the text says the base map needs a connection (ADR-0003).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(deps: AppDependencies, navigator: Navigator, tripId: String) {
     val places by remember { deps.itinerary.observePlaces(tripId) }.collectAsState(emptyList())
-    val source = TileSourcePresets.openFreeMap
-    val points = places.mapNotNull { it.point() }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -45,22 +46,41 @@ fun MapScreen(deps: AppDependencies, navigator: Navigator, tripId: String) {
                 navigationIcon = { TextButton(onClick = { navigator.back() }) { Text(stringResource(Res.string.action_back)) } },
             )
         },
-    ) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                MapSurface(source = source, points = points, modifier = Modifier.fillMaxSize())
-            }
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(stringResource(Res.string.map_attribution, source.attribution), style = MaterialTheme.typography.labelMedium)
-                Text(stringResource(Res.string.map_note, source.displayName), style = MaterialTheme.typography.bodySmall)
-                if (points.isEmpty()) Text(stringResource(Res.string.map_no_coordinates), style = MaterialTheme.typography.bodySmall)
-                places.forEach { place ->
-                    val point = place.point()
-                    Text(
-                        if (point != null) "${place.name} (${point.latitude}, ${point.longitude})" else place.name,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
+    ) { padding -> PlacesMap(places, padding) }
+}
+
+/** The map tab: every place of every active trip. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AllMapScreen(deps: AppDependencies, navigator: Navigator) {
+    val places by remember { deps.itinerary.observeAllPlaces() }.collectAsState(emptyList())
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(stringResource(Res.string.map_title)) }) },
+        bottomBar = { MainNavigationBar(Screen.AllMap, navigator) },
+    ) { padding -> PlacesMap(places, padding) }
+}
+
+@Composable
+private fun PlacesMap(places: List<PlaceRecord>, padding: PaddingValues) {
+    val source = TileSourcePresets.openFreeMap
+    val points = places.mapNotNull { it.point() }
+    Column(modifier = Modifier.fillMaxSize().padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+            MapSurface(source = source, points = points, modifier = Modifier.fillMaxSize())
+        }
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(stringResource(Res.string.map_attribution, source.attribution), style = MaterialTheme.typography.labelMedium)
+            Text(stringResource(Res.string.map_note, source.displayName), style = MaterialTheme.typography.bodySmall)
+            if (points.isEmpty()) Text(stringResource(Res.string.map_no_coordinates), style = MaterialTheme.typography.bodySmall)
+            places.forEach { place ->
+                val point = place.point()
+                Text(
+                    if (point != null) "${place.name} (${point.latitude}, ${point.longitude})" else place.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
             }
         }
     }

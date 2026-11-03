@@ -28,6 +28,11 @@ SELECT * FROM place WHERE trip_id = ? AND deleted_at IS NULL ORDER BY name;
 softDeletePlace:
 UPDATE place SET deleted_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
 
+-- Places of every trip that is not deleted or archived; used by the map tab.
+selectAllPlacesForMap:
+SELECT p.* FROM place AS p JOIN trip AS t ON t.id = p.trip_id
+WHERE p.deleted_at IS NULL AND t.deleted_at IS NULL AND t.archived_at IS NULL ORDER BY p.name;
+
 selectPlaceById:
 SELECT * FROM place WHERE id = ?;
 

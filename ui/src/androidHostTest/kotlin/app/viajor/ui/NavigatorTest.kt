@@ -31,4 +31,19 @@ class NavigatorTest {
         assertEquals(Screen.TripList, Navigator(emptyList()).current)
         assertTrue(Navigator().encode() == listOf("list"))
     }
+
+    @Test
+    fun tabsSwitchWithAFreshStackAndBackReturnsToTheTripList() {
+        val nav = Navigator()
+        nav.open(Screen.Itinerary("t1"))
+        nav.switchTab(Screen.AllMap)
+        assertEquals(Screen.AllMap, nav.current)
+        assertEquals(listOf("allmap"), nav.encode())
+        assertTrue(nav.canGoBack) // Back leaves a tab for the trip list
+        nav.back()
+        assertEquals(Screen.TripList, nav.current)
+        assertFalse(nav.canGoBack)
+        nav.back() // the host closes the app; the navigator stays put
+        assertEquals(Screen.TripList, nav.current)
+    }
 }
