@@ -93,5 +93,14 @@ fun StatusChip(text: String, modifier: Modifier = Modifier) {
     }
 }
 
+/** The top of Settings, Map and Search: the brand header, then the screen's title, as the home screen does. */
+@Composable
+fun TabHeader(title: String, modifier: Modifier = Modifier) {
+    androidx.compose.foundation.layout.Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
+        BrandHeader { StoredOnDeviceChip() }
+        Text(title, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp))
+    }
+}
+
 @Composable
 fun StoredOnDeviceChip(modifier: Modifier = Modifier) = StatusChip(stringResource(Res.string.status_stored_on_device), modifier)

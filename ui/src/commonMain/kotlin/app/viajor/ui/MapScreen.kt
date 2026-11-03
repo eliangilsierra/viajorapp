@@ -55,7 +55,7 @@ fun MapScreen(deps: AppDependencies, navigator: Navigator, tripId: String) {
 fun AllMapScreen(deps: AppDependencies, navigator: Navigator) {
     val places by remember { deps.itinerary.observeAllPlaces() }.collectAsState(emptyList())
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(Res.string.map_title)) }) },
+        topBar = { TabHeader(stringResource(Res.string.map_title)) },
         bottomBar = { MainNavigationBar(Screen.AllMap, navigator) },
     ) { padding -> PlacesMap(places, padding) }
 }
