@@ -2,7 +2,7 @@
 
 Status vocabulary: **Not implemented**, **Partially implemented**, **Implemented**, **Tested**,
 **Blocked**. A requirement is **Tested** only when the named automated test or recorded manual check has
-run and passed. Updated 2026-11-02 (MVP). **Tested** here means the named automated tests passed and the feature was also exercised by hand on an Android emulator (not a physical device, never on iOS). **Implemented** means code and automated tests exist but it was not exercised by hand. Rows marked Partially implemented name what is covered.
+run and passed. Updated 2026-11-02 (MVP and redesign). **Tested** here means the named automated tests passed and the feature was also exercised by hand on an Android emulator (not a physical device, never on iOS). **Implemented** means code and automated tests exist but it was not exercised by hand. Rows marked Partially implemented name what is covered.
 
 | ID | Journeys | ADR | Planned tests | Code | Status |
 | --- | --- | --- | --- | --- | --- |
@@ -21,7 +21,7 @@ run and passed. Updated 2026-11-02 (MVP). **Tested** here means the named automa
 | RSV-01 | J4 | 0002 | `ReservationTest` | none | Not implemented |
 | PLC-01 | J5 | 0002 | `PlaceRepositoryTest` | `SqlItineraryRepository` places, `PlaceUi.kt`; tests `RepositoriesTest`, `PlacesPresenterTest`; emulator run (two places with coordinates) | Tested |
 | PLC-02 | J5 | 0002, 0003 | `SearchTest`, geocoder fake | none | Not implemented |
-| MAP-01 | J5 | 0003 | map/list sync UI test; M | `MapScreen`, `MapSurface` (MapLibre, markers); emulator run (map centred on two places, tiles loaded, markers visible); no place picking from the map | Tested |
+| MAP-01 | J5 | 0003 | map/list sync UI test; M | `MapScreen`, `AllMapScreen` (the Map tab, every active trip), `MapSurface` (MapLibre, markers); tests `RepositoriesTest`; emulator run (map centred on two places, tiles loaded, markers visible); no place picking from the map | Tested |
 | MAP-02 | J6, J8 | 0003, 0004 | overlay UI | none | Not implemented |
 | MAP-03 | J5, J7 | 0003 | `TileSourceTest` | `TileSource`, `TileSourcePresets`, attribution shown on the map screen; `TileSourceTest`; emulator run | Tested |
 | OFM-01 | J7 | 0003 | `OfflinePackTest`, M on device | `domain/.../OfflineEstimate.kt` (tile arithmetic and a pre-download size estimate only; nothing is downloaded or stored) | Partially implemented |
@@ -47,5 +47,5 @@ run and passed. Updated 2026-11-02 (MVP). **Tested** here means the named automa
 | SYN-02 | J11 | 0006 | `ConflictResolutionTest`, E2E | `domain/.../SyncMerge.kt` (HLC and three-way field merge as pure functions; no change files, transport, encryption or UI) | Partially implemented |
 | SYN-03 | J10 | 0006 | `RoleAndRevocationTest`, threat-model review | none | Not implemented |
 | BUD-01 | J4 | 0002 | `BudgetTest` | `domain/.../Money.kt` (exact money type and per-currency totals; no cost fields in the schema, repository or UI) | Partially implemented |
-| A11Y-01 | all | 0001 | Compose accessibility checks; M with screen reader | none | Not implemented |
-| I18N-01 | all | 0001 | `StringsCompleteTest`, RTL M | none | Not implemented |
+| A11Y-01 | all | 0001 | Compose accessibility checks; M with screen reader | Icon-only controls carry content descriptions; token contrast pairs checked by `ViajorTokensTest`; 200 percent font size and the dark theme checked by hand on an emulator (home, itinerary, settings); no screen reader run and no automated accessibility checks | Partially implemented |
+| I18N-01 | all | 0001 | `StringsCompleteTest`, RTL M | English and Spanish string resources kept in step by `StringResourcesTest` (keys and placeholders); month names are resources; Spanish screens checked on an emulator; no right-to-left check | Partially implemented |

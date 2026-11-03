@@ -13,20 +13,24 @@ from pasted text or a CSV file after a review step; export a plan as Markdown or
 and erase everything. All data stays on the device with no account, server or analytics, and the app
 survives rotation.
 
-**Not done and not verified:** a physical device, iOS (never compiled), TalkBack and font scaling,
-optional AI and optional sync (only tested building blocks exist), offline map packs, routing providers.
+**The interface follows the Waypoint concept** (Pull Requests #75 to #87, still open): logo and wordmark header,
+a highlighted next-trip card, numbered trip cards, day cards in the itinerary, line icons, bottom navigation
+(Trips, Map, Search, Settings), Manrope and Inter type, readable dates in English and Spanish, and the dark theme.
+
+**Not done and not verified:** a physical device, iOS (never compiled), TalkBack, optional AI and optional sync (only tested building blocks exist), offline map packs, routing providers.
 See the lists below.
 
-## Verified (Windows 11, JDK 17; the whole chain of PRs #65 to #69 merged in a scratch branch)
+## Verified (Windows 11, JDK 17; the redesign chain of PRs #75 to #87 on top of `develop`)
 
 | Check | Result |
 | --- | --- |
 | `./gradlew :domain:allTests` | 133 tests passed |
-| `./gradlew :data:allTests :data:verifyCommonMainViajorDatabaseMigration` | 38 tests passed (repositories, search, backup service, migrations v1 to v2 to v3); migration verification passed |
-| `./gradlew :designsystem:allTests :ui:allTests` | 3 and 30 tests passed (token contrast, presenters, import, search, navigation, strings) |
+| `./gradlew :data:allTests :data:verifyCommonMainViajorDatabaseMigration` | 39 tests passed (repositories, search, backup service, migrations v1 to v2 to v3); migration verification passed |
+| `./gradlew :designsystem:allTests :ui:allTests` | 3 and 34 tests passed (token contrast, presenters, import, search, navigation, hero trip choice, strings) |
 | `./gradlew :androidApp:lintDebug :androidApp:assembleDebug :androidApp:assembleRelease` | Passed; lint reports informational warnings only. Release APK about 42 MB |
 | CI (`ci`, `pr-conventions`, `secret-scan`) | Green on every merged Pull Request; it runs only `:domain:allTests`, lint and `assembleDebug` |
 | Android emulator (API 37 image, headless, software GL), debug build | Restored a seeded trip through the system file picker; itinerary with times, places and the labelled estimate (7.1 km, 84 min on foot between two Lisbon places); the map opened centred on Lisbon with two markers over OpenFreeMap tiles and visible attribution; search found "cafe" in "Cafe da manha"; the import screen reviewed a pasted line and offered it for import; the trip editor opened the Material date picker on the stored date |
+| Android emulator, redesign (debug build, restored seed backup) | Home with the logo header, the next-trip card and the numbered card; itinerary day cards with the accent time, the overflow menu and the labelled estimate; the Map, Search and Settings tabs with the same header; the empty state; English and Spanish (accents and month names render); the dark theme on home, itinerary, map and settings; 200 percent font size on home, itinerary and settings, after fixing a squeezed header chip, bottom-bar labels at the screen edge and an invisible hero watermark in the dark theme |
 | Earlier emulator runs (debug and R8 release builds) | Created trips, added activities and places, exported and restored a backup through the system picker, deleted all data, data persisted across a cold restart; release cold start 1.4 s (emulator, not representative) |
 
 Running on the emulator found two defects that no test caught, both fixed: a launch crash (Compose
@@ -36,8 +40,9 @@ arrived). Lint caught an API 33 call in the file picker.
 ## Not verified or not possible here
 
 - **iOS: nothing.** No macOS or Xcode. The iOS database driver is written but never compiled.
-- **No physical device**, TalkBack, font scaling, landscape layout, the Spanish screens on screen, and
-  performance on large trips. Only a software-rendered emulator was used.
+- **No physical device**, TalkBack, landscape layout, and performance on large trips. Only a software-rendered
+  emulator was used. Font scaling was checked at 200 percent on three screens, not on the dialogs, the trip
+  editor, the import screen or the per-trip map.
 - Not exercised by hand (covered by automated tests only): moving an activity to another day, completing,
   reordering, deleting with undo, editing a place, exporting Markdown or CSV, importing a CSV file, the
   time picker, behaviour with no network.
@@ -64,7 +69,7 @@ The designer's weighted scores (its own judgement, not user research) are Waypoi
 Contour is weak at 16 px and can read as an eye or fingerprint. Not done: device testing, trademark
 search, colour-blind simulation, VectorDrawable/iOS icon export. **Decision (2026-10-27): the owner chose concept 01, Waypoint**, for its design system. The
 choice rests on their visual judgement, not on user research or a trademark search (still open).
-Design tokens and the Android app icon are wired in (issue #3, merged); the iOS icon files exist but were never opened in Xcode. Fonts are not wired.
+Design tokens and the Android app icon are wired in (issue #3, merged); the iOS icon files exist but were never opened in Xcode. The logo, wordmark, status chip, Manrope and Inter (SIL OFL, licences in `design/brand/fonts/`) are in the app on the redesign Pull Requests, not yet merged; see the UX review (Pull Request #73).
 
 ## Decisions and open items
 
@@ -79,8 +84,8 @@ Still open:
 
 - **ADR-0007** (FTS4 instead of FTS5 for Android 7 to 10 compatibility) is merged with status Proposed;
   the owner decides whether to accept it.
-- Review and merge of the MVP chain: #65, #66, #67, #68, #69 (in that order, each includes the earlier
-  ones) and this documentation PR.
+- Review and merge of the redesign chain, in this order (each includes the earlier ones): #73 (UX review, docs
+  only), #75, #77, #79, #81, #83, #85, #87 and this documentation PR.
 - Human decision on adding the `:data`, `:designsystem` and `:ui` tests and the migration verification to
   `.github/workflows/ci.yml`.
 - macOS access or a macOS CI runner for iOS validation; a physical device for the first real run.
@@ -91,7 +96,9 @@ Still open:
 - Reordering is by menu (up, down, move to another day), not drag. Estimates are shown only between
   consecutive activities of the same day. The map has no place picking and shows a world view when no place
   has coordinates.
-- Typography is not done: Manrope and Inter are not bundled until their OFL licences are checked.
+- Font files are subsetted to Latin and cut from the upstream variable fonts by a local script; add the Unicode
+  ranges of any new language. The base map stays light in the dark theme (OpenFreeMap's light style). The
+  per-trip screens (itinerary, editor, import, per-trip map) keep a back button instead of the brand header.
 - Places can be added, edited and deleted; deleting a place leaves activities that referenced it without it.
 - Restore only adds trips (no merge or replace). Delete-all is not a secure wipe.
 - Import supports pasted text and CSV with the columns title, day, start, end, notes; not XLSX.
@@ -99,10 +106,10 @@ Still open:
 
 ## Next tasks
 
-1. Run on a physical device and fix what appears; TalkBack and font-scale pass.
+1. Run on a physical device and fix what appears; TalkBack pass; font scale on the remaining screens.
 2. Optional AI: provider adapters, key storage in the platform secret store, disclosure and review screens
    on top of the proposal validator and prompt preview.
 3. Offline map packs (after the region-size spike) and a routing adapter behind `RoutingProvider`.
-4. Bundle the Waypoint fonts after the licence check; drag reordering.
+4. Drag reordering; the dashed suggestion component for the optional assistant (UX review, item 7).
 5. iOS: compile the shared modules and build the host app on a Mac.
 6. Optional sync (crypto spike first).

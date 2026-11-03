@@ -11,7 +11,7 @@ Priorities: P0/P1/P2 as in the [PRD](product/PRD.md). Risk column lists what cou
 | 1 | Environment reconnaissance | [Findings](research/2026-10-27-environment-and-stack-findings.md) | Done |
 | 2 | Product discovery | `docs/product/*` | Drafted, awaiting owner review |
 | 3 | Brand concepts | `design/brand/**`, `docs/design/BRAND_STRATEGY.md` | Done: Waypoint chosen by the owner (2026-10-27) |
-| 4 | Design system and UX prototype | tokens, components, interactive preview | In progress: Waypoint colour tokens, container mapping and Android icon merged; fonts, components and prototype not started |
+| 4 | Design system and UX prototype | tokens, components, interactive preview | In progress: Waypoint colour tokens, container mapping and Android icon merged; logo, header, chip, line icons, bottom navigation, cards, Manrope and Inter and the dark theme are built and checked on an emulator in open Pull Requests (#75 to #87); the interactive prototype and the suggestion component are not started |
 | 5 | Architecture decisions | ADR-0001..0006 | Accepted (2026-10-27) |
 | 6 | Project foundation and CI | Gradle project, version spike, CI | Android done and verified locally (F1-F4); CI workflow merged and green on `develop` for domain tests, lint and assemble (F5); data and designsystem tests not in CI; iOS unverified (F6) |
 | 7 | Local data model and persistence | schema, repositories, migrations | Done for trips, days, places, activities and search (schema v3, verified migrations, repositories, backup service); sync log tables not started |
@@ -21,7 +21,7 @@ Priorities: P0/P1/P2 as in the [PRD](product/PRD.md). Risk column lists what cou
 | 11 | Import/export | IMP-*, EXP-*, PRV-01 | MVP done: paste and CSV import with review, Markdown and CSV export, JSON backup and restore, delete-all; XLSX not started |
 | 12 | Optional AI | AI-* | In progress: proposal validation, answer parsing, prompt preview and secret redaction merged; no provider, key store or screens |
 | 13 | Optional sync | SYN-* | In progress: clock and field merge merged; no change files, transport or encryption |
-| 14 | Hardening | accessibility, performance, security | Not started |
+| 14 | Hardening | accessibility, performance, security | In progress: dark theme and 200 percent font size checked on an emulator on three screens; TalkBack, performance and a security pass not started |
 | 15 | Docs and release prep | README, store checklists, signing guide | In progress: README, CONTRIBUTING, SECURITY, PRIVACY, CODE_OF_CONDUCT and the release, signing and store readiness guides merged; nothing executed |
 | 16 | Final audit | release report | Not started |
 
