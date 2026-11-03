@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
@@ -57,13 +59,18 @@ fun BrandLockup(height: Dp, modifier: Modifier = Modifier) {
     )
 }
 
-/** The top of every top-level screen: the lockup on the left and the screen's actions on the right. */
+/**
+ * The top of every top-level screen: the lockup on the left and the screen's actions on the right. At large font
+ * sizes the actions wrap under the lockup instead of squeezing it.
+ */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BrandHeader(modifier: Modifier = Modifier, actions: @Composable RowScope.() -> Unit = {}) {
-    Row(
+    FlowRow(
         modifier = modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.statusBars).padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        itemVerticalAlignment = Alignment.CenterVertically,
     ) {
         BrandLockup(height = 34.dp)
         Row(verticalAlignment = Alignment.CenterVertically, content = actions)

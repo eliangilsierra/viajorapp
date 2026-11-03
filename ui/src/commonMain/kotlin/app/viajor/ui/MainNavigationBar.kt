@@ -7,7 +7,11 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -52,7 +56,13 @@ private fun androidx.compose.foundation.layout.RowScope.Item(
         selected = current == target,
         onClick = { if (current != target) navigator.switchTab(target) },
         icon = { Icon(painterResource(icon), contentDescription = null) },
-        label = { Text(label) },
+        label = {
+            // Four labels share the bar's width, so their text stops growing at 130% of the system size.
+            val density = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(density.density, minOf(density.fontScale, 1.3f))) {
+                Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+        },
         colors = colors,
     )
 }
