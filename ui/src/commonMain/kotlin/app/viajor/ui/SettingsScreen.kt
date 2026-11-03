@@ -9,13 +9,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,7 +46,6 @@ import viajorapp.ui.generated.resources.settings_privacy_body
 import viajorapp.ui.generated.resources.settings_privacy_title
 import viajorapp.ui.generated.resources.settings_title
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(deps: AppDependencies, files: FileAccess, navigator: Navigator) {
     val scope = rememberCoroutineScope()
@@ -57,9 +54,7 @@ fun SettingsScreen(deps: AppDependencies, files: FileAccess, navigator: Navigato
     var confirmDelete by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text(stringResource(Res.string.settings_title)) })
-        },
+        topBar = { TabHeader(stringResource(Res.string.settings_title)) },
         bottomBar = { MainNavigationBar(Screen.Settings, navigator) },
     ) { padding ->
         Column(
