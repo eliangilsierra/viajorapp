@@ -71,13 +71,10 @@ fun TripListScreen(deps: AppDependencies, navigator: Navigator) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(Res.string.trips_title)) },
-                actions = {
-                    TextButton(onClick = { navigator.open(Screen.Search) }) { Text(stringResource(Res.string.action_search)) }
-                    TextButton(onClick = { navigator.open(Screen.Settings) }) { Text(stringResource(Res.string.action_settings)) }
-                },
-            )
+            BrandHeader {
+                TextButton(onClick = { navigator.open(Screen.Search) }) { Text(stringResource(Res.string.action_search)) }
+                TextButton(onClick = { navigator.open(Screen.Settings) }) { Text(stringResource(Res.string.action_settings)) }
+            }
         },
         snackbarHost = { SnackbarHost(snackbar) },
         floatingActionButton = {
@@ -120,7 +117,9 @@ private fun EmptyTrips(onCreate: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        BrandSymbol(96.dp)
         Text(stringResource(Res.string.tagline), style = MaterialTheme.typography.bodyLarge)
+        StoredOnDeviceChip()
         Text(stringResource(Res.string.empty_trips_title), style = MaterialTheme.typography.titleMedium)
         Text(stringResource(Res.string.empty_trips_body), style = MaterialTheme.typography.bodyMedium)
         Button(onClick = onCreate) { Text(stringResource(Res.string.action_create_trip)) }

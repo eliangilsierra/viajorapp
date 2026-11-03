@@ -134,4 +134,5 @@
     <string name="action_show_map">Show on map</string>
     <string name="map_note">The base map is loaded from %1$s over the internet. Without a connection it stays blank; your places below are still listed.</string>
     <string name="map_no_coordinates">None of your places has coordinates yet. Add a latitude and longitude to a place to see it on the map.</string>
+    <string name="status_stored_on_device">Stored on this device</string>
 </resources>
