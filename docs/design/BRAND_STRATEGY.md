@@ -124,8 +124,8 @@ invented here).
 
 **Typefaces (UI and documents).** At most two open-licensed (SIL OFL) families per product surface,
 bundled as Compose Multiplatform resources. Each concept proposes a pairing in its `typography.md`:
-Manrope with Inter, Space Grotesk with IBM Plex Sans, or Fraunces with Source Sans 3. Licence text must be
-re-checked at bundling time; no font file is in the repository at this stage.
+Manrope with Inter, Space Grotesk with IBM Plex Sans, or Fraunces with Source Sans 3. Waypoint uses Manrope with Inter; the files and licence texts are
+recorded in `design/brand/fonts/README.md`.
 
 **Scale and accessibility.** Body 16 sp minimum for long text, 200 percent font scale must reflow without
 clipping, tabular figures for dates, times, distances and prices.

@@ -321,7 +321,7 @@ private fun DayHeader(day: DayWithActivities) {
         }
         Column {
             Text(stringResource(Res.string.day_heading, day.day.index), style = MaterialTheme.typography.titleMedium)
-            if (date != null) Text(date.toString(), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (date != null) Text(friendlyDate(date), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -447,7 +447,7 @@ private fun MoveDialog(days: List<app.viajor.data.DayRecord>, onDismiss: () -> U
             Column {
                 days.forEach { day ->
                     val date = day.date
-                    val label = if (date != null) stringResource(Res.string.day_heading_dated, day.index, date.toString()) else stringResource(Res.string.day_heading, day.index)
+                    val label = if (date != null) stringResource(Res.string.day_heading_dated, day.index, friendlyDate(date)) else stringResource(Res.string.day_heading, day.index)
                     TextButton(onClick = { onPick(day.id) }) { Text(label) }
                 }
                 TextButton(onClick = { onPick(null) }) { Text(stringResource(Res.string.move_to_ideas)) }

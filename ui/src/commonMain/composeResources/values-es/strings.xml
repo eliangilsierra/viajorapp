@@ -138,4 +138,18 @@
     <string name="hero_next">Próximo viaje</string>
     <string name="hero_now">En curso</string>
     <string name="trip_stats">Días: %1$d · Lugares: %2$d · Actividades: %3$d</string>
+    <string name="date_with_year">%2$d %1$s %3$d</string>
+    <string name="date_no_year">%2$d %1$s</string>
+    <string name="month_short_1">ene</string>
+    <string name="month_short_2">feb</string>
+    <string name="month_short_3">mar</string>
+    <string name="month_short_4">abr</string>
+    <string name="month_short_5">may</string>
+    <string name="month_short_6">jun</string>
+    <string name="month_short_7">jul</string>
+    <string name="month_short_8">ago</string>
+    <string name="month_short_9">sep</string>
+    <string name="month_short_10">oct</string>
+    <string name="month_short_11">nov</string>
+    <string name="month_short_12">dic</string>
 </resources>

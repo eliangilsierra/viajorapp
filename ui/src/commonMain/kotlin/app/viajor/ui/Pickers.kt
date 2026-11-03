@@ -40,7 +40,7 @@ import kotlin.time.Instant
 internal fun DateField(label: String, value: LocalDate?, onChange: (LocalDate?) -> Unit, modifier: Modifier = Modifier) {
     var open by remember { mutableStateOf(false) }
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-        OutlinedButton(onClick = { open = true }) { Text(label + ": " + (value?.toString() ?: stringResource(Res.string.value_not_set))) }
+        OutlinedButton(onClick = { open = true }) { Text(label + ": " + (value?.let { friendlyDate(it) } ?: stringResource(Res.string.value_not_set))) }
         if (value != null) TextButton(onClick = { onChange(null) }) { Text(stringResource(Res.string.action_clear)) }
     }
     if (open) {
