@@ -135,4 +135,7 @@
     <string name="map_note">El mapa base se carga desde %1$s por internet. Sin conexión queda en blanco; tus lugares siguen listados abajo.</string>
     <string name="map_no_coordinates">Ninguno de tus lugares tiene coordenadas todavía. Añade latitud y longitud a un lugar para verlo en el mapa.</string>
     <string name="status_stored_on_device">Guardado en este dispositivo</string>
+    <string name="hero_next">Próximo viaje</string>
+    <string name="hero_now">En curso</string>
+    <string name="trip_stats">Días: %1$d · Lugares: %2$d · Actividades: %3$d</string>
 </resources>

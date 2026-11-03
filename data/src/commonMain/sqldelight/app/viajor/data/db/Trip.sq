@@ -29,6 +29,15 @@ UPDATE trip SET deleted_at = ?, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
 restore:
 UPDATE trip SET deleted_at = NULL, updated_at_hlc = ?, updated_by = ? WHERE id = ?;
 
+-- Active trips with the counts the home screen shows (days, activities, places that are not deleted).
+selectActiveSummaries:
+SELECT t.id, t.title, t.description, t.start_date, t.end_date, t.archived_at,
+  (SELECT COUNT(*) FROM trip_day d WHERE d.trip_id = t.id AND d.deleted_at IS NULL) AS day_count,
+  (SELECT COUNT(*) FROM activity a WHERE a.trip_id = t.id AND a.deleted_at IS NULL) AS activity_count,
+  (SELECT COUNT(*) FROM place p WHERE p.trip_id = t.id AND p.deleted_at IS NULL) AS place_count
+FROM trip AS t WHERE t.deleted_at IS NULL AND t.archived_at IS NULL
+ORDER BY t.start_date IS NULL, t.start_date, t.title;
+
 selectById:
 SELECT * FROM trip WHERE id = ?;
 

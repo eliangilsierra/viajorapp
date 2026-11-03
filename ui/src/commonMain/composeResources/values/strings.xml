@@ -135,4 +135,7 @@
     <string name="map_note">The base map is loaded from %1$s over the internet. Without a connection it stays blank; your places below are still listed.</string>
     <string name="map_no_coordinates">None of your places has coordinates yet. Add a latitude and longitude to a place to see it on the map.</string>
     <string name="status_stored_on_device">Stored on this device</string>
+    <string name="hero_next">Next trip</string>
+    <string name="hero_now">Happening now</string>
+    <string name="trip_stats">Days: %1$d · Places: %2$d · Activities: %3$d</string>
 </resources>

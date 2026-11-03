@@ -19,6 +19,9 @@ import kotlin.coroutines.CoroutineContext
 interface TripRepository {
     fun observeTrips(): Flow<List<TripRecord>>
 
+    /** Active trips with their day, activity and place counts, for the home screen. */
+    fun observeTripSummaries(): Flow<List<TripSummary>>
+
     /** Emits null when the trip does not exist or is deleted. */
     fun observeTrip(id: String): Flow<TripRecord?>
 
@@ -45,6 +48,14 @@ class SqlTripRepository(
 ) : TripRepository {
     override fun observeTrips(): Flow<List<TripRecord>> =
         db.tripQueries.selectActive().asFlow().mapToList(io).map { rows -> rows.map { it.toRecord() } }
+
+    override fun observeTripSummaries(): Flow<List<TripSummary>> =
+        db.tripQueries.selectActiveSummaries { id, title, description, startDate, endDate, archivedAt, days, activities, places ->
+            TripSummary(
+                TripRecord(id, title, description, startDate?.let(LocalDate::parse), endDate?.let(LocalDate::parse), archivedAt != null),
+                days.toInt(), activities.toInt(), places.toInt(),
+            )
+        }.asFlow().mapToList(io)
 
     override fun observeTrip(id: String): Flow<TripRecord?> =
         db.tripQueries.selectById(id).asFlow().mapToOneOrNull(io).map { row -> row?.takeIf { it.deleted_at == null }?.toRecord() }

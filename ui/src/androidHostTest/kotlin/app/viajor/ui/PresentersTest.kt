@@ -65,7 +65,7 @@ class PresentersTest {
         assertNotNull(editor.state.value.savedTripId)
 
         assertEquals(ListStatus.CONTENT, list.state.value.status)
-        assertEquals(listOf("Lisbon"), list.state.value.trips.map { it.title })
+        assertEquals(listOf("Lisbon"), list.state.value.trips.map { it.trip.title })
     }
 
     @Test
@@ -84,14 +84,14 @@ class PresentersTest {
     fun deletingOffersUndoAndUndoBringsTheTripBack() = runTest {
         val list = TripListPresenter(trips, eager())
         TripEditorPresenter(trips, eager()).apply { setTitle("Porto"); save() }
-        val porto = list.state.value.trips.single()
+        val porto = list.state.value.trips.single().trip
 
         list.delete(porto)
         assertEquals(ListStatus.EMPTY, list.state.value.status)
         assertEquals(porto, list.state.value.undoableDelete)
 
         list.undoDelete()
-        assertEquals(listOf("Porto"), list.state.value.trips.map { it.title })
+        assertEquals(listOf("Porto"), list.state.value.trips.map { it.trip.title })
         assertNull(list.state.value.undoableDelete)
     }
 
@@ -188,7 +188,7 @@ class PresentersTest {
     @Test
     fun aRepositoryFailureBecomesAnErrorStateNotACrash() = runTest {
         val failing = object : TripRepository by trips {
-            override fun observeTrips() = flow<List<app.viajor.data.TripRecord>> { throw IOException("disk") }
+            override fun observeTripSummaries() = flow<List<app.viajor.data.TripSummary>> { throw IOException("disk") }
         }
         val list = TripListPresenter(failing, eager())
         assertEquals(ListStatus.ERROR, list.state.value.status)
@@ -198,7 +198,7 @@ class PresentersTest {
         }
         TripEditorPresenter(trips, eager()).apply { setTitle("X"); save() }
         val ok = TripListPresenter(failingWrites, eager())
-        ok.delete(ok.state.value.trips.single())
+        ok.delete(ok.state.value.trips.single().trip)
         assertEquals(ListStatus.ERROR, ok.state.value.status)
         assertNull(ok.state.value.undoableDelete)
     }
